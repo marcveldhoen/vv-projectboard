@@ -4,186 +4,192 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VV Projectboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --blue:#2563EB;--blue-light:#EFF6FF;--blue-mid:#DBEAFE;
-    --green:#16A34A;--green-light:#F0FDF4;
-    --amber:#D97706;--amber-light:#FFFBEB;
-    --red:#DC2626;--red-light:#FEF2F2;
-    --gray:#6B7280;--gray-light:#F9FAFB;--gray-mid:#F3F4F6;
-    --border:#E5E7EB;--text:#111827;--text-muted:#6B7280;
-    --white:#FFFFFF;--radius:10px;--radius-sm:6px;
-    --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md:0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.05);
+    --green:#0F3D2E;--green-dark:#123F31;
+    --gold:#C79A2E;--gold-soft:#E7D2A0;
+    --ink:#1A1A1A;--paper:#F8F5EE;
+    --white:#FFFFFF;
+    --border:#DDD9CE;--text-muted:#6B7260;
+    --radius:16px;--radius-sm:10px;
+    --shadow:0 1px 4px rgba(15,61,46,0.07),0 1px 2px rgba(15,61,46,0.04);
+    --shadow-md:0 4px 16px rgba(15,61,46,0.10),0 2px 6px rgba(15,61,46,0.06);
+    --red:#C0392B;--red-light:#FDECEA;
   }
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F8FAFC;color:var(--text);min-height:100vh}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
+  h1,h2,h3,.topbar-title,.tab,.btn-primary,.btn-add-doel,.btn-add-taak,.btn-save{font-family:'Poppins',sans-serif}
 
   /* AUTH */
-  #auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
-  .auth-card{background:var(--white);border-radius:16px;box-shadow:var(--shadow-md);padding:2.5rem;width:100%;max-width:400px;border:1px solid var(--border)}
+  #auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;background:var(--paper)}
+  .auth-card{background:var(--white);border-radius:20px;box-shadow:var(--shadow-md);padding:2.75rem;width:100%;max-width:420px;border:1px solid var(--border)}
   .auth-logo{text-align:center;margin-bottom:2rem}
-  .auth-logo h1{font-size:22px;font-weight:600;color:var(--text);margin-top:.5rem}
-  .auth-logo p{font-size:14px;color:var(--text-muted);margin-top:4px}
-  .logo-icon{width:48px;height:48px;background:var(--blue);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;color:white;font-size:22px}
+  .auth-logo .vakverbind-logo{width:220px;max-width:260px;margin:0 auto} .auth-logo .vakverbind-logo svg{display:block;width:100%;height:auto}
+  .auth-logo p{font-size:13px;color:var(--text-muted);margin-top:10px;font-family:'Inter',sans-serif}
+  .auth-divider{width:40px;height:2px;background:var(--gold);border-radius:2px;margin:.75rem auto 0}
   .form-group{margin-bottom:1rem}
-  .form-group label{display:block;font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px}
-  .form-group input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--text);background:var(--white);transition:border-color .15s}
-  .form-group input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,0.1)}
-  .btn-primary{width:100%;padding:11px;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;transition:background .15s}
-  .btn-primary:hover{background:#1D4ED8}
-  .btn-primary:disabled{background:#93C5FD;cursor:not-allowed}
-  .auth-error{background:var(--red-light);color:var(--red);border:1px solid #FECACA;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:1rem;display:none}
+  .form-group label{display:block;font-size:13px;font-weight:500;color:var(--ink);margin-bottom:6px;font-family:'Poppins',sans-serif}
+  .form-group input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--ink);background:var(--white);transition:border-color .15s;font-family:'Inter',sans-serif}
+  .form-group input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(15,61,46,0.08)}
+  .btn-primary{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;transition:background .15s;letter-spacing:.02em}
+  .btn-primary:hover{background:var(--green-dark)}
+  .btn-primary:disabled{background:#7FA899;cursor:not-allowed}
+  .auth-error{background:var(--red-light);color:var(--red);border:1px solid #F5C6C0;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:1rem;display:none}
 
   /* APP */
   #app-screen{display:none;min-height:100vh}
-  .topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 1.5rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-  .topbar-left{display:flex;align-items:center;gap:10px}
-  .topbar-logo{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700}
-  .topbar-title{font-size:15px;font-weight:600;color:var(--text)}
+  .topbar{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+  .topbar-left{display:flex;align-items:center;gap:14px}
+  .topbar-left .vakverbind-logo{width:160px} .topbar-left .vakverbind-logo svg{display:block;width:100%;height:auto}
+  .topbar-divider{width:1.5px;height:24px;background:var(--border);margin:0 4px}
+  .topbar-subtitle{font-size:13px;font-weight:500;color:var(--text-muted);font-family:'Poppins',sans-serif;letter-spacing:.01em}
   .topbar-right{display:flex;align-items:center;gap:12px}
-  .user-badge{font-size:13px;color:var(--text-muted);background:var(--gray-mid);padding:4px 12px;border-radius:20px}
-  .btn-logout{font-size:13px;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 12px;cursor:pointer;transition:all .15s}
-  .btn-logout:hover{background:var(--gray-mid);color:var(--text)}
+  .user-badge{font-size:12px;color:var(--text-muted);background:var(--paper);padding:4px 12px;border-radius:20px;border:1px solid var(--border);font-family:'Inter',sans-serif}
+  .btn-logout{font-size:13px;color:var(--text-muted);background:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 14px;cursor:pointer;transition:all .15s;font-family:'Poppins',sans-serif;font-weight:500}
+  .btn-logout:hover{background:var(--paper);color:var(--ink);border-color:var(--green)}
 
   /* TABS */
-  .tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--white);padding:0 1.5rem}
-  .tab{padding:12px 16px;font-size:14px;font-weight:500;color:var(--text-muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
-  .tab:hover{color:var(--text)}
-  .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+  .tabs{display:flex;border-bottom:1.5px solid var(--border);background:var(--white);padding:0 2rem}
+  .tab{padding:14px 18px;font-size:13px;font-weight:600;color:var(--text-muted);border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;transition:all .15s;letter-spacing:.02em}
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--green);border-bottom-color:var(--gold)}
 
   /* MAIN */
-  .main{padding:1.5rem;max-width:900px;margin:0 auto}
+  .main{padding:2rem;max-width:920px;margin:0 auto}
 
   /* DASHBOARD */
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
-  .stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;box-shadow:var(--shadow)}
-  .stat-card .n{font-size:26px;font-weight:600;line-height:1}
-  .stat-card .l{font-size:12px;color:var(--text-muted);margin-top:4px}
-  .stat-card.blue .n{color:var(--blue)}
-  .stat-card.amber .n{color:var(--amber)}
-  .stat-card.green .n{color:var(--green)}
+  .dash-intro{margin-bottom:1.5rem}
+  .dash-intro h2{font-size:20px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif}
+  .dash-intro p{font-size:13px;color:var(--text-muted);margin-top:4px}
+  .gold-line{width:36px;height:2.5px;background:var(--gold);border-radius:2px;margin:.6rem 0}
 
-  .overall-progress{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
-  .overall-progress h3{font-size:14px;font-weight:500;color:var(--text);margin-bottom:.75rem;display:flex;justify-content:space-between}
-  .overall-progress h3 span{color:var(--text-muted);font-weight:400}
-  .pbar{height:8px;background:var(--gray-mid);border-radius:4px;overflow:hidden}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1.5rem}
+  .stat-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;box-shadow:var(--shadow)}
+  .stat-card .n{font-size:28px;font-weight:700;line-height:1;font-family:'Poppins',sans-serif}
+  .stat-card .l{font-size:12px;color:var(--text-muted);margin-top:5px;font-weight:500}
+  .stat-card.c-green .n{color:var(--green)}
+  .stat-card.c-gold .n{color:var(--gold)}
+  .stat-card.c-ink .n{color:var(--ink)}
+  .stat-card .accent-line{width:24px;height:2px;background:var(--gold);border-radius:2px;margin-top:8px}
+
+  .overall-progress{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.4rem 1.6rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+  .overall-progress h3{font-size:14px;font-weight:600;color:var(--green);margin-bottom:.9rem;display:flex;justify-content:space-between;font-family:'Poppins',sans-serif}
+  .overall-progress h3 span{color:var(--gold);font-weight:700}
+  .pbar{height:8px;background:var(--paper);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
   .pbar-fill{height:100%;background:var(--green);border-radius:4px;transition:width .5s ease}
 
   /* DOELEN */
-  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-  .section-header h2{font-size:16px;font-weight:600}
-  .btn-add-doel{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;transition:background .15s}
-  .btn-add-doel:hover{background:#1D4ED8}
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+  .section-header h2{font-size:16px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif}
+  .btn-add-doel{display:flex;align-items:center;gap:6px;padding:9px 16px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;letter-spacing:.02em}
+  .btn-add-doel:hover{background:var(--green-dark)}
 
-  .doel-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.75rem;box-shadow:var(--shadow);overflow:hidden}
-  .doel-header{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;cursor:pointer;transition:background .1s}
-  .doel-header:hover{background:var(--gray-light)}
+  .doel-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:.85rem;box-shadow:var(--shadow);overflow:hidden}
+  .doel-header{display:flex;align-items:center;gap:12px;padding:1rem 1.4rem;cursor:pointer;transition:background .1s}
+  .doel-header:hover{background:var(--paper)}
   .doel-color{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-  .doel-name{font-size:15px;font-weight:500;flex:1}
+  .doel-name{font-size:15px;font-weight:600;flex:1;font-family:'Poppins',sans-serif;color:var(--ink)}
   .doel-prog-wrap{display:flex;align-items:center;gap:8px}
-  .doel-prog-bar{width:80px;height:5px;background:var(--gray-mid);border-radius:3px;overflow:hidden}
+  .doel-prog-bar{width:80px;height:5px;background:var(--paper);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
   .doel-prog-fill{height:100%;border-radius:3px;transition:width .4s}
-  .doel-prog-pct{font-size:12px;color:var(--text-muted);min-width:30px;text-align:right}
+  .doel-prog-pct{font-size:12px;color:var(--text-muted);min-width:32px;text-align:right;font-weight:600;font-family:'Poppins',sans-serif}
   .doel-chevron{color:var(--text-muted);font-size:18px;transition:transform .2s;line-height:1}
   .doel-chevron.open{transform:rotate(180deg)}
-  .doel-actions-wrap{border-top:1px solid var(--border)}
+  .doel-actions-wrap{border-top:1.5px solid var(--border)}
 
   /* TAKEN */
-  .taak-row{display:flex;align-items:center;gap:10px;padding:.65rem 1.25rem;border-bottom:1px solid var(--border);transition:background .1s}
+  .taak-row{display:flex;align-items:center;gap:10px;padding:.7rem 1.4rem;border-bottom:1px solid var(--border);transition:background .1s}
   .taak-row:last-child{border-bottom:none}
-  .taak-row:hover{background:var(--gray-light)}
-  .taak-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:var(--white)}
+  .taak-row:hover{background:var(--paper)}
+  .taak-check{width:18px;height:18px;border-radius:5px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:var(--white)}
   .taak-check.checked{background:var(--green);border-color:var(--green)}
   .taak-check.checked::after{content:'✓';color:white;font-size:11px;font-weight:700}
-  .taak-text{flex:1;font-size:14px;transition:all .15s}
+  .taak-text{flex:1;font-size:14px;color:var(--ink)}
   .taak-text.done{text-decoration:line-through;color:var(--text-muted)}
-  .status-pill{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
-  .s-gepland{background:var(--blue-light);color:var(--blue)}
-  .s-bezig{background:var(--amber-light);color:var(--amber)}
-  .s-afgerond{background:var(--green-light);color:var(--green)}
+  .status-pill{font-size:11px;font-weight:600;padding:3px 11px;border-radius:20px;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;font-family:'Poppins',sans-serif;letter-spacing:.02em}
+  .s-gepland{background:var(--paper);color:var(--green);border:1.5px solid var(--border)}
+  .s-bezig{background:#FEF6E0;color:#9A6E10;border:1.5px solid var(--gold-soft)}
+  .s-afgerond{background:#EAF3EE;color:var(--green);border:1.5px solid #B5D4C4}
   .taak-del{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;padding:2px 4px;opacity:0;transition:opacity .15s;line-height:1}
   .taak-row:hover .taak-del{opacity:1}
   .taak-del:hover{color:var(--red)}
 
   /* ADD TAAK */
-  .add-taak-wrap{padding:.75rem 1.25rem;background:var(--gray-light);border-top:1px solid var(--border)}
+  .add-taak-wrap{padding:.85rem 1.4rem;background:var(--paper);border-top:1.5px solid var(--border)}
   .add-taak-form{display:flex;gap:8px}
-  .add-taak-form input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--white);color:var(--text)}
-  .add-taak-form input:focus{outline:none;border-color:var(--blue)}
-  .add-taak-form select{padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--white);color:var(--text)}
-  .add-taak-form select:focus{outline:none;border-color:var(--blue)}
-  .btn-add-taak{padding:8px 14px;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
-  .btn-add-taak:hover{background:#1D4ED8}
+  .add-taak-form input{flex:1;padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--white);color:var(--ink);font-family:'Inter',sans-serif}
+  .add-taak-form input:focus{outline:none;border-color:var(--green)}
+  .add-taak-form select{padding:9px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--white);color:var(--ink);font-family:'Inter',sans-serif}
+  .add-taak-form select:focus{outline:none;border-color:var(--green)}
+  .btn-add-taak{padding:9px 16px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif}
+  .btn-add-taak:hover{background:var(--green-dark)}
 
-  /* ADD DOEL MODAL */
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
-  .modal{background:var(--white);border-radius:16px;padding:2rem;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
-  .modal h3{font-size:16px;font-weight:600;margin-bottom:1.25rem}
-  .modal input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--text);margin-bottom:1rem}
-  .modal input:focus{outline:none;border-color:var(--blue)}
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,61,46,0.35);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(2px)}
+  .modal{background:var(--white);border-radius:20px;padding:2.1rem;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(15,61,46,0.18)}
+  .modal h3{font-size:17px;font-weight:700;color:var(--green);margin-bottom:.4rem;font-family:'Poppins',sans-serif}
+  .modal-gold{width:28px;height:2px;background:var(--gold);border-radius:2px;margin-bottom:1.25rem}
+  .modal input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--ink);margin-bottom:1rem;font-family:'Inter',sans-serif}
+  .modal input:focus{outline:none;border-color:var(--green)}
   .color-picker{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
   .color-dot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .15s}
-  .color-dot.selected{border-color:var(--text);transform:scale(1.15)}
+  .color-dot.selected{border-color:var(--ink);transform:scale(1.15)}
   .modal-btns{display:flex;gap:8px;justify-content:flex-end}
-  .btn-cancel{padding:9px 18px;background:none;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;cursor:pointer;color:var(--text)}
-  .btn-cancel:hover{background:var(--gray-mid)}
-  .btn-save{padding:9px 18px;background:var(--blue);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer}
-  .btn-save:hover{background:#1D4ED8}
+  .btn-cancel{padding:9px 18px;background:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;cursor:pointer;color:var(--ink);font-family:'Poppins',sans-serif;font-weight:500}
+  .btn-cancel:hover{background:var(--paper)}
+  .btn-save{padding:9px 20px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+  .btn-save:hover{background:var(--green-dark)}
 
   .empty-state{text-align:center;padding:3rem 1rem;color:var(--text-muted);font-size:14px}
   .loading{text-align:center;padding:3rem;color:var(--text-muted);font-size:14px}
 
   @media(max-width:600px){
     .stats-grid{grid-template-columns:repeat(2,1fr)}
-    .topbar-title{display:none}
+    .topbar-subtitle{display:none}
+    .main{padding:1rem}
   }
 </style>
 </head>
 <body>
 
+<!-- VakVerbind logo component inlined -->
+
 <!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">
-      <div class="logo-icon" style="font-size:16px;font-weight:700;letter-spacing:-1px">VV</div>
-      <h1>VV Projectboard</h1>
-      <p>Log in om verder te gaan</p>
+      <div class="vakverbind-logo"><svg viewBox="0 0 900 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="vakverbind-title-auth" style="display:block;width:100%;height:auto">
+  <title id="vakverbind-title-auth">VakVerbind</title>
+  <g transform="translate(230 40)">
+    <path fill="#00513A" d="M80 40 L145 40 L270 330 Q285 365 250 380 Q215 395 198 358 Z"/>
+    <path fill="#00513A" d="M420 40 L485 40 L335 405 Q320 440 285 428 Q250 416 267 377 Z"/>
+    <path fill="#C9A227" d="M175 40 L375 40 L315 160 L235 160 Z"/>
+    <path fill="#C9A227" d="M245 365 L315 205 L355 290 L285 430 Z"/>
+    <path fill="#00513A" d="M280 170 Q325 170 350 210 L420 330 Q438 362 407 383 Q374 405 354 370 L300 275 Q288 255 275 275 L235 345 L200 270 L245 195 Q258 170 280 170 Z"/>
+    <path fill="#FFFFFF" d="M300 250 L360 350 L315 420 L255 315 Z"/>
+  </g>
+  <text x="70" y="595" font-family="Montserrat,Poppins,Arial,sans-serif" font-size="88" font-weight="800" letter-spacing="-4">
+    <tspan fill="#00513A">Vak</tspan><tspan fill="#000000">Verbind</tspan>
+  </text>
+</svg></div>
+      <div class="auth-divider"></div>
+      <p>Projectboard — log in om verder te gaan</p>
     </div>
-    <div class="auth-error" id="auth-error"></div>
-    <div class="form-group">
-      <label>E-mailadres</label>
-      <input type="email" id="email" placeholder="jouw@email.nl" />
-    </div>
-    <div class="form-group">
-      <label>Wachtwoord</label>
-      <input type="password" id="password" placeholder="••••••••" />
-    </div>
-    <button class="btn-primary" id="login-btn" onclick="doLogin()">Inloggen</button>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="app-screen">
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-logo">VV</div>
-      <span class="topbar-title">VV Projectboard</span>
-    </div>
-    <div class="topbar-right">
-      <span class="user-badge" id="user-email"></span>
-      <button class="btn-logout" onclick="doLogout()">Uitloggen</button>
-    </div>
-  </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
-    <button class="tab" onclick="showTab('doelen')">🎯 Doelen & Taken</button>
+    <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="tab" onclick="showTab('doelen')">Doelen & Taken</button>
   </div>
 
   <div class="main">
     <!-- DASHBOARD TAB -->
     <div id="tab-dashboard">
+      <div class="dash-intro">
+        <h2>Voortgang opstarttraject</h2>
+        <div class="gold-line"></div>
+        <p>Overzicht van alle doelen en taken voor de start van VakVerbind.</p>
+      </div>
       <div class="stats-grid" id="stats-grid"></div>
       <div class="overall-progress">
         <h3>Totale voortgang <span id="overall-pct">0%</span></h3>
@@ -207,6 +213,7 @@
 <div class="modal-overlay" id="modal" style="display:none" onclick="closeModal(event)">
   <div class="modal">
     <h3>Nieuw doel toevoegen</h3>
+    <div class="modal-gold"></div>
     <input type="text" id="modal-naam" placeholder="Naam van het doel..." />
     <div class="color-picker" id="color-picker"></div>
     <div class="modal-btns">
@@ -235,7 +242,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const COLORS = ['#2563EB','#16A34A','#D97706','#DC2626','#7C3AED','#0891B2','#DB2777','#EA580C'];
+const COLORS = ['#0F3D2E','#C79A2E','#1A6B4A','#8B5E0A','#2E5D4B','#A67C52','#4A7C6F','#6B4226'];
 let selectedColor = COLORS[0];
 let doelen = [];
 let unsubDoelen = null;
@@ -294,16 +301,17 @@ onAuthStateChanged(auth, user => {
   }
 });
 
-// Realtime listener
 function startListening() {
   const q = query(collection(db, 'doelen'), orderBy('aangemaakt'));
   unsubDoelen = onSnapshot(q, snap => {
     doelen = snap.docs.map(d => ({ id: d.id, ...d.data(), taken: d.data().taken || [] }));
+    if(!starterRun && doelen.length === 0) { starterRun = true; vulStartDoelen(); }
     render();
   });
 }
 
-// Render
+let starterRun = false;
+
 function render() {
   renderStats();
   renderDashboardDoelen();
@@ -311,38 +319,33 @@ function render() {
 }
 
 function calcStats() {
-  let totalTaken = 0, gepland = 0, bezig = 0, afgerond = 0;
-  doelen.forEach(d => d.taken.forEach(t => {
-    totalTaken++;
-    if(t.status === 'gepland') gepland++;
-    else if(t.status === 'bezig') bezig++;
-    else if(t.status === 'afgerond') afgerond++;
-  }));
-  return { totalDoelen: doelen.length, totalTaken, gepland, bezig, afgerond };
+  let totalTaken=0,gepland=0,bezig=0,afgerond=0;
+  doelen.forEach(d=>d.taken.forEach(t=>{totalTaken++;if(t.status==='gepland')gepland++;else if(t.status==='bezig')bezig++;else if(t.status==='afgerond')afgerond++;}));
+  return{totalDoelen:doelen.length,totalTaken,gepland,bezig,afgerond};
 }
 
 function renderStats() {
   const s = calcStats();
-  const pct = s.totalTaken ? Math.round(s.afgerond / s.totalTaken * 100) : 0;
-  document.getElementById('overall-pct').textContent = pct + '%';
-  document.getElementById('overall-bar').style.width = pct + '%';
+  const pct = s.totalTaken ? Math.round(s.afgerond/s.totalTaken*100) : 0;
+  document.getElementById('overall-pct').textContent = pct+'%';
+  document.getElementById('overall-bar').style.width = pct+'%';
   document.getElementById('stats-grid').innerHTML = `
-    <div class="stat-card"><div class="n">${s.totalDoelen}</div><div class="l">Doelen</div></div>
-    <div class="stat-card blue"><div class="n">${s.gepland}</div><div class="l">Gepland</div></div>
-    <div class="stat-card amber"><div class="n">${s.bezig}</div><div class="l">Bezig</div></div>
-    <div class="stat-card green"><div class="n">${s.afgerond}</div><div class="l">Afgerond</div></div>
+    <div class="stat-card c-green"><div class="n">${s.totalDoelen}</div><div class="l">Doelen</div><div class="accent-line"></div></div>
+    <div class="stat-card c-ink"><div class="n">${s.gepland}</div><div class="l">Gepland</div><div class="accent-line"></div></div>
+    <div class="stat-card c-gold"><div class="n">${s.bezig}</div><div class="l">Bezig</div><div class="accent-line"></div></div>
+    <div class="stat-card c-green"><div class="n">${s.afgerond}</div><div class="l">Afgerond</div><div class="accent-line"></div></div>
   `;
 }
 
 function doelProgress(d) {
   if(!d.taken.length) return 0;
-  return Math.round(d.taken.filter(t => t.status === 'afgerond').length / d.taken.length * 100);
+  return Math.round(d.taken.filter(t=>t.status==='afgerond').length/d.taken.length*100);
 }
 
 function renderDashboardDoelen() {
   const el = document.getElementById('dashboard-doelen');
-  if(!doelen.length) { el.innerHTML = '<div class="empty-state">Nog geen doelen. Ga naar "Doelen & Taken" om te beginnen.</div>'; return; }
-  el.innerHTML = doelen.map(d => {
+  if(!doelen.length){el.innerHTML='<div class="empty-state">Nog geen doelen. Ga naar "Doelen & Taken" om te starten.</div>';return;}
+  el.innerHTML = doelen.map(d=>{
     const pct = doelProgress(d);
     return `<div class="doel-card" style="margin-bottom:.6rem">
       <div class="doel-header" style="cursor:default">
@@ -359,8 +362,8 @@ function renderDashboardDoelen() {
 
 function renderDoelenList() {
   const el = document.getElementById('doelen-list');
-  if(!doelen.length) { el.innerHTML = '<div class="empty-state">Nog geen doelen. Klik op "Doel toevoegen" om te starten.</div>'; return; }
-  el.innerHTML = doelen.map(d => {
+  if(!doelen.length){el.innerHTML='<div class="empty-state">Nog geen doelen. Klik op "+ Doel toevoegen" om te starten.</div>';return;}
+  el.innerHTML = doelen.map(d=>{
     const pct = doelProgress(d);
     const open = d._open !== false;
     return `<div class="doel-card">
@@ -370,11 +373,11 @@ function renderDoelenList() {
         <div class="doel-prog-wrap">
           <div class="doel-prog-bar"><div class="doel-prog-fill" style="width:${pct}%;background:${d.kleur}"></div></div>
           <span class="doel-prog-pct">${pct}%</span>
-          <span class="doel-chevron ${open ? 'open' : ''}">⌄</span>
+          <span class="doel-chevron ${open?'open':''}">⌄</span>
         </div>
       </div>
-      ${open ? `<div class="doel-actions-wrap">
-        ${d.taken.map((t,i) => `
+      ${open?`<div class="doel-actions-wrap">
+        ${d.taken.map((t,i)=>`
           <div class="taak-row">
             <div class="taak-check ${t.status==='afgerond'?'checked':''}" onclick="toggleCheck('${d.id}',${i})"></div>
             <span class="taak-text ${t.status==='afgerond'?'done':''}">${t.tekst}</span>
@@ -393,111 +396,92 @@ function renderDoelenList() {
             <button class="btn-add-taak" onclick="addTaak('${d.id}')">+ Taak</button>
           </div>
         </div>
-      </div>` : ''}
+      </div>`:''}
     </div>`;
   }).join('');
 }
 
-// Toggle open/dicht
 window.toggleDoel = (id) => {
-  const d = doelen.find(x => x.id === id);
-  if(d) { d._open = d._open === false ? true : false; renderDoelenList(); }
+  const d = doelen.find(x=>x.id===id);
+  if(d){d._open=d._open===false?true:false;renderDoelenList();}
 };
 
-// Taak toevoegen
 window.addTaak = async (doelId) => {
-  const inp = document.getElementById('taak-input-' + doelId);
-  const sel = document.getElementById('taak-status-' + doelId);
-  if(!inp || !inp.value.trim()) return;
-  const d = doelen.find(x => x.id === doelId);
+  const inp = document.getElementById('taak-input-'+doelId);
+  const sel = document.getElementById('taak-status-'+doelId);
+  if(!inp||!inp.value.trim()) return;
+  const d = doelen.find(x=>x.id===doelId);
   if(!d) return;
-  const taken = [...d.taken, { tekst: inp.value.trim(), status: sel.value }];
-  await updateDoc(doc(db, 'doelen', doelId), { taken });
-  inp.value = '';
+  const taken = [...d.taken,{tekst:inp.value.trim(),status:sel.value}];
+  await updateDoc(doc(db,'doelen',doelId),{taken});
+  inp.value='';
 };
 
-// Check toggling
-window.toggleCheck = async (doelId, idx) => {
-  const d = doelen.find(x => x.id === doelId);
+window.toggleCheck = async (doelId,idx) => {
+  const d = doelen.find(x=>x.id===doelId);
   if(!d) return;
   const taken = [...d.taken];
-  taken[idx] = { ...taken[idx], status: taken[idx].status === 'afgerond' ? 'gepland' : 'afgerond' };
-  await updateDoc(doc(db, 'doelen', doelId), { taken });
+  taken[idx]={...taken[idx],status:taken[idx].status==='afgerond'?'gepland':'afgerond'};
+  await updateDoc(doc(db,'doelen',doelId),{taken});
 };
 
-// Status doorlopen
-window.cycleStatus = async (doelId, idx) => {
-  const d = doelen.find(x => x.id === doelId);
+window.cycleStatus = async (doelId,idx) => {
+  const d = doelen.find(x=>x.id===doelId);
   if(!d) return;
-  const volgorde = ['gepland', 'bezig', 'afgerond'];
-  const taken = [...d.taken];
-  const huidig = volgorde.indexOf(taken[idx].status);
-  taken[idx] = { ...taken[idx], status: volgorde[(huidig + 1) % 3] };
-  await updateDoc(doc(db, 'doelen', doelId), { taken });
+  const volgorde=['gepland','bezig','afgerond'];
+  const taken=[...d.taken];
+  const huidig=volgorde.indexOf(taken[idx].status);
+  taken[idx]={...taken[idx],status:volgorde[(huidig+1)%3]};
+  await updateDoc(doc(db,'doelen',doelId),{taken});
 };
 
-// Taak verwijderen
-window.delTaak = async (doelId, idx) => {
-  const d = doelen.find(x => x.id === doelId);
+window.delTaak = async (doelId,idx) => {
+  const d = doelen.find(x=>x.id===doelId);
   if(!d) return;
-  const taken = d.taken.filter((_, i) => i !== idx);
-  await updateDoc(doc(db, 'doelen', doelId), { taken });
+  const taken = d.taken.filter((_,i)=>i!==idx);
+  await updateDoc(doc(db,'doelen',doelId),{taken});
 };
 
-// Doel toevoegen
 window.openAddDoel = () => {
-  document.getElementById('modal-naam').value = '';
-  document.getElementById('modal').style.display = 'flex';
-  setTimeout(() => document.getElementById('modal-naam').focus(), 50);
+  document.getElementById('modal-naam').value='';
+  document.getElementById('modal').style.display='flex';
+  setTimeout(()=>document.getElementById('modal-naam').focus(),50);
 };
 
-window.closeModal = (e) => { if(e.target.id === 'modal') closeModalDirect(); };
-window.closeModalDirect = () => { document.getElementById('modal').style.display = 'none'; };
+window.closeModal = (e) => {if(e.target.id==='modal')closeModalDirect();};
+window.closeModalDirect = () => {document.getElementById('modal').style.display='none';};
 
 window.saveDoel = async () => {
   const naam = document.getElementById('modal-naam').value.trim();
   if(!naam) return;
-  await addDoc(collection(db, 'doelen'), { naam, kleur: selectedColor, taken: [], aangemaakt: serverTimestamp() });
+  await addDoc(collection(db,'doelen'),{naam,kleur:selectedColor,taken:[],aangemaakt:serverTimestamp()});
   closeModalDirect();
 };
 
-document.getElementById('modal-naam').addEventListener('keydown', e => { if(e.key === 'Enter') window.saveDoel(); });
+document.getElementById('modal-naam').addEventListener('keydown',e=>{if(e.key==='Enter')window.saveDoel();});
 
-// Tabs
 window.showTab = (tab) => {
-  document.getElementById('tab-dashboard').style.display = tab === 'dashboard' ? 'block' : 'none';
-  document.getElementById('tab-doelen').style.display = tab === 'doelen' ? 'block' : 'none';
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='dashboard')||(i===1&&tab==='doelen')));
+  document.getElementById('tab-dashboard').style.display=tab==='dashboard'?'block':'none';
+  document.getElementById('tab-doelen').style.display=tab==='doelen'?'block':'none';
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='dashboard')||(i===1&&tab==='doelen')));
 };
 
-// Vul standaard doelen als database leeg is
 async function vulStartDoelen() {
-  const startDoelen = [
-    { naam: 'Juridische structuur & inschrijving', kleur: '#2563EB' },
-    { naam: 'Vergunningen & certificering', kleur: '#16A34A' },
-    { naam: 'Financiën & verzekeringen', kleur: '#D97706' },
-    { naam: 'Administratie & software', kleur: '#7C3AED' },
-    { naam: 'Commercie & markt', kleur: '#DB2777' },
-    { naam: 'Personeel & werkgeversverplichtingen', kleur: '#0891B2' },
+  const startDoelen=[
+    {naam:'Juridische structuur & inschrijving',kleur:'#0F3D2E'},
+    {naam:'Vergunningen & certificering',kleur:'#1A6B4A'},
+    {naam:'Financiën & verzekeringen',kleur:'#C79A2E'},
+    {naam:'Administratie & software',kleur:'#8B5E0A'},
+    {naam:'Commercie & markt',kleur:'#2E5D4B'},
+    {naam:'Personeel & werkgeversverplichtingen',kleur:'#6B4226'},
   ];
-  for(const d of startDoelen) {
-    await addDoc(collection(db, 'doelen'), { ...d, taken: [], aangemaakt: serverTimestamp() });
+  for(const d of startDoelen){
+    await addDoc(collection(db,'doelen'),{...d,taken:[],aangemaakt:serverTimestamp()});
   }
 }
 
-// Eenmalig startdoelen aanmaken als db leeg
-let starterRun = false;
-const origStart = startListening;
-function startListening2() {
-  const q = query(collection(db, 'doelen'), orderBy('aangemaakt'));
-  unsubDoelen = onSnapshot(q, snap => {
-    doelen = snap.docs.map(d => ({ id: d.id, ...d.data(), taken: d.data().taken || [] }));
-    if(!starterRun && doelen.length === 0) { starterRun = true; vulStartDoelen(); }
-    render();
-  });
-}
-window.startListening = startListening2;
+window.startListening = startListening;
+startListening();
 </script>
-
 </body>
 </html>
