@@ -48,6 +48,11 @@
   .user-badge{font-size:12px;color:var(--text-muted);background:var(--paper);padding:4px 12px;border-radius:20px;border:1px solid var(--border);font-family:'Inter',sans-serif}
   .btn-logout{font-size:13px;color:var(--text-muted);background:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 14px;cursor:pointer;transition:all .15s;font-family:'Poppins',sans-serif;font-weight:500}
   .btn-logout:hover{background:var(--paper);color:var(--ink);border-color:var(--green)}
+  .btn-pw{font-size:13px;color:var(--text-muted);background:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 14px;cursor:pointer;transition:all .15s;font-family:'Poppins',sans-serif;font-weight:500}
+  .btn-pw:hover{background:var(--paper);color:var(--ink);border-color:var(--green)}
+  .pw-msg{font-size:13px;padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:1rem;display:none}
+  .pw-msg.error{background:var(--red-light);color:var(--red);border:1px solid #F5C6C0;display:block}
+  .pw-msg.success{background:#EAF3EE;color:var(--green);border:1px solid #B5D4C4;display:block}
 
   /* TABS */
   .tabs{display:flex;border-bottom:1.5px solid var(--border);background:var(--white);padding:0 2rem}
@@ -192,6 +197,7 @@
     </div>
     <div class="topbar-right">
       <span class="user-badge" id="user-email"></span>
+      <button class="btn-pw" onclick="openPwModal()">Wachtwoord wijzigen</button>
       <button class="btn-logout" onclick="doLogout()">Uitloggen</button>
     </div>
   </div>
@@ -245,10 +251,26 @@
   </div>
 </div>
 
+<!-- ==================== WACHTWOORD MODAL ==================== -->
+<div class="modal-overlay" id="pw-modal" style="display:none" onclick="if(event.target.id==='pw-modal')closePwModal()">
+  <div class="modal">
+    <h3>Wachtwoord wijzigen</h3>
+    <div class="modal-gold"></div>
+    <div class="pw-msg" id="pw-msg"></div>
+    <input type="password" id="pw-current" placeholder="Huidig wachtwoord" />
+    <input type="password" id="pw-new" placeholder="Nieuw wachtwoord" />
+    <input type="password" id="pw-confirm" placeholder="Bevestig nieuw wachtwoord" />
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closePwModal()">Annuleren</button>
+      <button class="btn-save" id="pw-save-btn" onclick="changePw()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
 <!-- ==================== FIREBASE ==================== -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -268,7 +290,6 @@ const COLORS = ['#00513A','#C9A227','#1A6B4A','#8B5E0A','#2E5D4B','#A67C52','#4A
 let selectedColor = COLORS[0];
 let doelen = [];
 let unsubDoelen = null;
-let starterRun = false;
 
 // Color picker
 const cp = document.getElementById('color-picker');
@@ -329,7 +350,6 @@ function startListening() {
   const q = query(collection(db, 'doelen'), orderBy('aangemaakt'));
   unsubDoelen = onSnapshot(q, snap => {
     doelen = snap.docs.map(d => ({ id: d.id, ...d.data(), taken: d.data().taken || [] }));
-    if(!starterRun && doelen.length === 0) { starterRun = true; vulStartDoelen(); }
     render();
   });
 }
@@ -396,18 +416,45 @@ document.getElementById('modal-naam').addEventListener('keydown',e=>{if(e.key===
 // Tabs
 window.showTab=(tab)=>{document.getElementById('tab-dashboard').style.display=tab==='dashboard'?'block':'none';document.getElementById('tab-doelen').style.display=tab==='doelen'?'block':'none';document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='dashboard')||(i===1&&tab==='doelen')));};
 
-// Start doelen
-async function vulStartDoelen(){
-  const s=[
-    {naam:'Juridische structuur & inschrijving',kleur:'#00513A'},
-    {naam:'Vergunningen & certificering',kleur:'#1A6B4A'},
-    {naam:'Financiën & verzekeringen',kleur:'#C9A227'},
-    {naam:'Administratie & software',kleur:'#8B5E0A'},
-    {naam:'Commercie & markt',kleur:'#2E5D4B'},
-    {naam:'Personeel & werkgeversverplichtingen',kleur:'#6B4226'},
-  ];
-  for(const d of s){await addDoc(collection(db,'doelen'),{...d,taken:[],aangemaakt:serverTimestamp()});}
-}
+// Wachtwoord wijzigen
+window.openPwModal=()=>{
+  document.getElementById('pw-current').value='';
+  document.getElementById('pw-new').value='';
+  document.getElementById('pw-confirm').value='';
+  const msg=document.getElementById('pw-msg');msg.className='pw-msg';msg.style.display='none';
+  document.getElementById('pw-modal').style.display='flex';
+  setTimeout(()=>document.getElementById('pw-current').focus(),50);
+};
+window.closePwModal=()=>{document.getElementById('pw-modal').style.display='none';};
+
+window.changePw=async()=>{
+  const current=document.getElementById('pw-current').value;
+  const newPw=document.getElementById('pw-new').value;
+  const confirm=document.getElementById('pw-confirm').value;
+  const msg=document.getElementById('pw-msg');
+  const btn=document.getElementById('pw-save-btn');
+
+  msg.className='pw-msg';msg.style.display='none';
+
+  if(!current||!newPw||!confirm){msg.textContent='Vul alle velden in.';msg.className='pw-msg error';return;}
+  if(newPw.length<6){msg.textContent='Nieuw wachtwoord moet minimaal 6 tekens zijn.';msg.className='pw-msg error';return;}
+  if(newPw!==confirm){msg.textContent='Nieuwe wachtwoorden komen niet overeen.';msg.className='pw-msg error';return;}
+
+  btn.disabled=true;btn.textContent='Opslaan...';
+  try{
+    const user=auth.currentUser;
+    const credential=EmailAuthProvider.credential(user.email,current);
+    await reauthenticateWithCredential(user,credential);
+    await updatePassword(user,newPw);
+    msg.textContent='Wachtwoord succesvol gewijzigd!';msg.className='pw-msg success';
+    setTimeout(()=>closePwModal(),1500);
+  }catch(e){
+    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'){msg.textContent='Huidig wachtwoord is onjuist.';}
+    else{msg.textContent='Er ging iets mis. Probeer het opnieuw.';}
+    msg.className='pw-msg error';
+  }
+  btn.disabled=false;btn.textContent='Opslaan';
+};
 </script>
 </body>
 </html>
