@@ -96,6 +96,11 @@
   .doel-prog-pct{font-size:12px;color:var(--text-muted);min-width:32px;text-align:right;font-weight:600;font-family:'Poppins',sans-serif}
   .doel-chevron{color:var(--text-muted);font-size:18px;transition:transform .2s;line-height:1}
   .doel-chevron.open{transform:rotate(180deg)}
+  .doel-btns{display:flex;gap:4px;margin-left:8px}
+  .doel-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:3px 5px;border-radius:6px;opacity:0;transition:all .15s;line-height:1}
+  .doel-header:hover .doel-btn{opacity:1}
+  .doel-btn:hover{background:var(--paper);color:var(--ink)}
+  .doel-btn.del:hover{color:var(--red)}
   .doel-actions-wrap{border-top:1.5px solid var(--border)}
 
   /* TAKEN */
@@ -388,12 +393,16 @@ function renderDoelenList(){
   if(!doelen.length){el.innerHTML='<div class="empty-state">Nog geen doelen. Klik op "+ Doel toevoegen" om te starten.</div>';return;}
   el.innerHTML=doelen.map(d=>{
     const pct=doelProgress(d);const open=d._open!==false;
-    return`<div class="doel-card"><div class="doel-header" onclick="toggleDoel('${d.id}')"><span class="doel-color" style="background:${d.kleur}"></span><span class="doel-name">${d.naam}</span><div class="doel-prog-wrap"><div class="doel-prog-bar"><div class="doel-prog-fill" style="width:${pct}%;background:${d.kleur}"></div></div><span class="doel-prog-pct">${pct}%</span><span class="doel-chevron ${open?'open':''}">&#8964;</span></div></div>${open?`<div class="doel-actions-wrap">${d.taken.map((t,i)=>`<div class="taak-row"><div class="taak-check ${t.status==='afgerond'?'checked':''}" onclick="toggleCheck('${d.id}',${i})"></div><span class="taak-text ${t.status==='afgerond'?'done':''}">${t.tekst}</span><button class="status-pill s-${t.status}" onclick="cycleStatus('${d.id}',${i})">${t.status}</button><button class="taak-del" onclick="delTaak('${d.id}',${i})">&times;</button></div>`).join('')}<div class="add-taak-wrap"><div class="add-taak-form"><input type="text" id="taak-input-${d.id}" placeholder="Nieuwe taak omschrijven..." onkeydown="if(event.key==='Enter')addTaak('${d.id}')"/><select id="taak-status-${d.id}"><option value="gepland">gepland</option><option value="bezig">bezig</option><option value="afgerond">afgerond</option></select><button class="btn-add-taak" onclick="addTaak('${d.id}')">+ Taak</button></div></div></div>`:''}</div>`;
+    return`<div class="doel-card"><div class="doel-header" onclick="toggleDoel('${d.id}')"><span class="doel-color" style="background:${d.kleur}"></span><span class="doel-name">${d.naam}</span><div class="doel-prog-wrap"><div class="doel-prog-bar"><div class="doel-prog-fill" style="width:${pct}%;background:${d.kleur}"></div></div><span class="doel-prog-pct">${pct}%</span><div class="doel-btns"><button class="doel-btn" onclick="event.stopPropagation();renameDoel('${d.id}')" title="Hernoemen">&#9998;</button><button class="doel-btn del" onclick="event.stopPropagation();delDoel('${d.id}')" title="Verwijderen">&times;</button></div><span class="doel-chevron ${open?'open':''}">&#8964;</span></div></div>${open?`<div class="doel-actions-wrap">${d.taken.map((t,i)=>`<div class="taak-row"><div class="taak-check ${t.status==='afgerond'?'checked':''}" onclick="toggleCheck('${d.id}',${i})"></div><span class="taak-text ${t.status==='afgerond'?'done':''}">${t.tekst}</span><button class="status-pill s-${t.status}" onclick="cycleStatus('${d.id}',${i})">${t.status}</button><button class="taak-del" onclick="delTaak('${d.id}',${i})">&times;</button></div>`).join('')}<div class="add-taak-wrap"><div class="add-taak-form"><input type="text" id="taak-input-${d.id}" placeholder="Nieuwe taak omschrijven..." onkeydown="if(event.key==='Enter')addTaak('${d.id}')"/><select id="taak-status-${d.id}"><option value="gepland">gepland</option><option value="bezig">bezig</option><option value="afgerond">afgerond</option></select><button class="btn-add-taak" onclick="addTaak('${d.id}')">+ Taak</button></div></div></div>`:''}</div>`;
   }).join('');
 }
 
 // Actions
 window.toggleDoel=(id)=>{const d=doelen.find(x=>x.id===id);if(d){d._open=d._open===false?true:false;renderDoelenList();}};
+
+window.delDoel=async(id)=>{if(!confirm('Weet je zeker dat je dit doel en alle taken wilt verwijderen?'))return;await deleteDoc(doc(db,'doelen',id));};
+
+window.renameDoel=async(id)=>{const d=doelen.find(x=>x.id===id);if(!d)return;const naam=prompt('Nieuwe naam voor dit doel:',d.naam);if(!naam||!naam.trim())return;await updateDoc(doc(db,'doelen',id),{naam:naam.trim()});};
 
 window.addTaak=async(doelId)=>{const inp=document.getElementById('taak-input-'+doelId);const sel=document.getElementById('taak-status-'+doelId);if(!inp||!inp.value.trim())return;const d=doelen.find(x=>x.id===doelId);if(!d)return;const taken=[...d.taken,{tekst:inp.value.trim(),status:sel.value}];await updateDoc(doc(db,'doelen',doelId),{taken});inp.value='';};
 
