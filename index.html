@@ -40,17 +40,17 @@
 
   /* APP */
   #app-screen{display:none;min-height:100vh}
-  .topbar{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
-  .topbar-left{display:flex;align-items:center;gap:14px}
-  .topbar-left .vv-logo{height:40px;width:auto;display:block}
-  .topbar-divider{width:1.5px;height:24px;background:var(--border);margin:0 4px}
-  .topbar-subtitle{font-size:13px;font-weight:500;color:var(--text-muted);font-family:'Poppins',sans-serif;letter-spacing:.01em}
-  .topbar-right{display:flex;align-items:center;gap:12px}
-  .user-badge{font-size:12px;color:var(--text-muted);background:var(--paper);padding:4px 12px;border-radius:20px;border:1px solid var(--border);font-family:'Inter',sans-serif}
-  .btn-logout{font-size:13px;color:var(--text-muted);background:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 14px;cursor:pointer;transition:all .15s;font-family:'Poppins',sans-serif;font-weight:500}
-  .btn-logout:hover{background:var(--paper);color:var(--ink);border-color:var(--green)}
-  .btn-pw{font-size:13px;color:var(--text-muted);background:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 14px;cursor:pointer;transition:all .15s;font-family:'Poppins',sans-serif;font-weight:500}
-  .btn-pw:hover{background:var(--paper);color:var(--ink);border-color:var(--green)}
+  .topbar{background:var(--green);border-bottom:3px solid var(--gold);padding:0 2rem;height:66px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,81,58,0.18)}
+  .topbar-left{display:flex;align-items:center;gap:16px}
+  .topbar-left .vv-logo{height:42px;width:auto;display:block;filter:brightness(0) invert(1);drop-shadow:0 1px 4px rgba(0,0,0,0.15)}
+  .topbar-divider{width:1.5px;height:26px;background:rgba(255,255,255,0.25);margin:0 2px}
+  .topbar-subtitle{font-size:13px;font-weight:700;color:var(--gold);font-family:'Poppins',sans-serif;letter-spacing:.08em;text-transform:uppercase}
+  .topbar-right{display:flex;align-items:center;gap:10px}
+  .user-badge{font-size:12px;color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.1);padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);font-family:'Inter',sans-serif}
+  .btn-logout{font-size:13px;color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.25);border-radius:var(--radius-sm);padding:5px 14px;cursor:pointer;transition:all .15s;font-family:'Poppins',sans-serif;font-weight:500}
+  .btn-logout:hover{background:rgba(255,255,255,0.2);color:var(--white);border-color:rgba(255,255,255,0.5)}
+  .btn-pw{font-size:13px;color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.25);border-radius:var(--radius-sm);padding:5px 14px;cursor:pointer;transition:all .15s;font-family:'Poppins',sans-serif;font-weight:500}
+  .btn-pw:hover{background:rgba(255,255,255,0.2);color:var(--white);border-color:rgba(255,255,255,0.5)}
   .pw-msg{font-size:13px;padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:1rem;display:none}
   .pw-msg.error{background:var(--red-light);color:var(--red);border:1px solid #F5C6C0;display:block}
   .pw-msg.success{background:#EAF3EE;color:var(--green);border:1px solid #B5D4C4;display:block}
@@ -241,7 +241,7 @@
     .stats-grid{grid-template-columns:repeat(2,1fr)}
     .topbar{padding:0 1rem;height:56px}
     .topbar-left .vv-logo{height:32px}
-    .topbar-subtitle{display:none}
+    .topbar-subtitle{font-size:11px;letter-spacing:.05em}
     .tabs{padding:0 1rem}
     .main{padding:1.25rem}
     .btn-pw{display:none}
@@ -257,6 +257,7 @@
     .topbar-left{gap:8px}
     .topbar-left .vv-logo{height:28px}
     .topbar-divider{display:none}
+    .topbar-subtitle{display:none}
     .topbar-right{gap:6px}
     .user-badge{display:none}
     .btn-logout{font-size:12px;padding:4px 10px}
