@@ -42,7 +42,7 @@
   #app-screen{display:none;min-height:100vh}
   .topbar{background:var(--green);border-bottom:3px solid var(--gold);padding:0 2rem;height:66px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,81,58,0.18)}
   .topbar-left{display:flex;align-items:center;gap:16px}
-  .topbar-left .vv-logo{height:44px;width:auto;display:block;background:white;border-radius:10px;padding:5px 10px;box-shadow:0 1px 6px rgba(0,0,0,0.15)}
+  .topbar-left .vv-logo{height:42px;width:auto;display:block;filter:brightness(0) invert(1);drop-shadow:0 1px 4px rgba(0,0,0,0.15)}
   .topbar-divider{width:1.5px;height:26px;background:rgba(255,255,255,0.25);margin:0 2px}
   .topbar-subtitle{font-size:13px;font-weight:700;color:var(--gold);font-family:'Poppins',sans-serif;letter-spacing:.08em;text-transform:uppercase}
   .topbar-right{display:flex;align-items:center;gap:10px}
@@ -64,55 +64,26 @@
   /* MAIN */
   .main{padding:2rem;max-width:920px;margin:0 auto}
 
-  /* DASHBOARD HERO */
-  .dash-hero{background:linear-gradient(135deg,var(--green) 0%,var(--green-dark) 100%);border-radius:20px;padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;box-shadow:0 4px 24px rgba(0,81,58,0.18);gap:1.5rem}
-  .dash-hero-left{flex:1}
-  .dash-fase-badge{display:inline-block;background:rgba(201,162,39,0.2);color:var(--gold);border:1.5px solid rgba(201,162,39,0.4);border-radius:20px;font-size:11px;font-weight:700;padding:4px 14px;letter-spacing:.06em;text-transform:uppercase;font-family:'Poppins',sans-serif;margin-bottom:.75rem}
-  .dash-hero-title{font-size:22px;font-weight:700;color:var(--white);font-family:'Poppins',sans-serif;line-height:1.2;margin-bottom:.4rem}
-  .dash-hero-sub{font-size:13px;color:rgba(255,255,255,0.6);font-family:'Inter',sans-serif}
-  .dash-hero-right{display:flex;flex-direction:column;align-items:center;gap:.4rem;flex-shrink:0}
-  .dash-ring-wrap{position:relative;width:100px;height:100px;display:flex;align-items:center;justify-content:center}
-  .dash-ring{width:100px;height:100px;position:absolute;top:0;left:0}
-  .dash-ring-pct{font-size:22px;font-weight:700;color:var(--white);font-family:'Poppins',sans-serif;position:relative;z-index:1}
-  .dash-ring-label{font-size:11px;color:rgba(255,255,255,0.55);font-family:'Inter',sans-serif;letter-spacing:.03em}
-  .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.25rem}
-  .dash-stat{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;box-shadow:var(--shadow);position:relative;overflow:hidden}
-  .dash-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
-  .dash-stat.c-green::before{background:var(--green)}
-  .dash-stat.c-gold::before{background:var(--gold)}
-  .dash-stat.c-ink::before{background:var(--ink)}
-  .dash-stat.c-red::before{background:var(--red)}
-  .dash-stat .n{font-size:28px;font-weight:700;line-height:1;font-family:'Poppins',sans-serif;margin-top:.2rem}
-  .dash-stat.c-green .n{color:var(--green)}
-  .dash-stat.c-gold .n{color:var(--gold)}
-  .dash-stat.c-ink .n{color:var(--ink)}
-  .dash-stat.c-red .n{color:var(--red)}
-  .dash-stat .l{font-size:11px;color:var(--text-muted);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-family:'Poppins',sans-serif}
-  .dash-columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-  .dash-block{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.4rem;box-shadow:var(--shadow)}
-  .dash-block-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
-  .dash-block-header h3{font-size:13px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif;text-transform:uppercase;letter-spacing:.05em}
-  .dash-block-icon{font-size:13px;color:var(--gold)}
-  .next-action-item{display:flex;align-items:flex-start;gap:10px;padding:.6rem 0;border-bottom:1px solid var(--border)}
-  .next-action-item:last-child{border-bottom:none}
-  .next-action-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px}
-  .next-action-dot.bezig{background:var(--green)}
-  .next-action-text{font-size:13px;color:var(--ink);line-height:1.4;flex:1}
-  .next-action-doel{font-size:11px;color:var(--text-muted);margin-top:2px}
-  .next-action-dl{font-size:11px;color:var(--red);font-weight:600;margin-top:2px}
-  .dash-doel-row{display:flex;align-items:center;gap:10px;padding:.55rem 0;border-bottom:1px solid var(--border)}
-  .dash-doel-row:last-child{border-bottom:none}
-  .dash-doel-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-  .dash-doel-name{font-size:13px;color:var(--ink);flex:1;font-weight:500}
-  .dash-doel-bar{width:70px;height:5px;background:var(--paper);border-radius:3px;overflow:hidden;border:1px solid var(--border);flex-shrink:0}
-  .dash-doel-fill{height:100%;border-radius:3px;transition:width .4s}
-  .dash-doel-pct{font-size:11px;color:var(--text-muted);min-width:28px;text-align:right;font-weight:600;font-family:'Poppins',sans-serif}
-  .dash-notitie-item{padding:.5rem 0}
-  .dash-notitie-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gold);font-family:'Poppins',sans-serif;margin-bottom:3px}
-  .dash-notitie-titel{font-size:13px;font-weight:600;color:var(--ink);font-family:'Poppins',sans-serif}
-  .dash-notitie-datum{font-size:11px;color:var(--text-muted);margin-top:2px}
-  .dash-notitie-preview{font-size:12px;color:var(--text-muted);margin-top:4px;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-  .dash-empty{font-size:13px;color:var(--text-muted);padding:.5rem 0;font-style:italic}
+  /* DASHBOARD */
+  .dash-intro{margin-bottom:1.5rem}
+  .dash-intro h2{font-size:20px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif}
+  .dash-intro p{font-size:13px;color:var(--text-muted);margin-top:4px}
+  .gold-line{width:36px;height:2.5px;background:var(--gold);border-radius:2px;margin:.6rem 0}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1.5rem}
+  .stat-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;box-shadow:var(--shadow)}
+  .stat-card .n{font-size:28px;font-weight:700;line-height:1;font-family:'Poppins',sans-serif}
+  .stat-card .l{font-size:12px;color:var(--text-muted);margin-top:5px;font-weight:500}
+  .stat-card.c-green .n{color:var(--green)}
+  .stat-card.c-gold .n{color:var(--gold)}
+  .stat-card.c-ink .n{color:var(--ink)}
+  .stat-card .accent-line{width:24px;height:2px;background:var(--gold);border-radius:2px;margin-top:8px}
+
+  .overall-progress{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.4rem 1.6rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+  .overall-progress h3{font-size:14px;font-weight:600;color:var(--green);margin-bottom:.9rem;display:flex;justify-content:space-between;font-family:'Poppins',sans-serif}
+  .overall-progress h3 span{color:var(--gold);font-weight:700}
+  .pbar{height:8px;background:var(--paper);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+  .pbar-fill{height:100%;background:var(--green);border-radius:4px;transition:width .5s ease}
 
   /* DOELEN */
   .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
@@ -220,6 +191,78 @@
   .nf-textarea{width:100%;min-height:120px;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--ink);font-family:'Inter',sans-serif;line-height:1.6;resize:vertical;margin-bottom:.75rem}
   .nf-textarea:focus{outline:none;border-color:var(--green)}
   .nf-footer{display:flex;gap:8px;justify-content:flex-end}
+
+  /* HUISSTIJL TAB */
+  .hs-intro{margin-bottom:1.5rem}
+  .hs-intro h2{font-size:20px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif}
+  .hs-intro p{font-size:13px;color:var(--text-muted);margin-top:4px}
+  .hs-gold-line{width:36px;height:2.5px;background:var(--gold);border-radius:2px;margin:.6rem 0}
+  .hs-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start}
+  .hs-block{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.4rem;box-shadow:var(--shadow);margin-bottom:1rem}
+  .hs-block-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+  .hs-block-header h3{font-size:13px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif;text-transform:uppercase;letter-spacing:.05em}
+  .hs-block-icon{font-size:14px;color:var(--gold);font-weight:700;font-family:'Poppins',sans-serif}
+  .hs-field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .hs-field{display:flex;flex-direction:column;gap:6px}
+  .hs-field label{font-size:12px;font-weight:600;color:var(--ink);font-family:'Poppins',sans-serif}
+  .hs-field input[type=text]{padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;color:var(--ink);font-family:'Inter',sans-serif;width:100%}
+  .hs-field input[type=text]:focus{outline:none;border-color:var(--green)}
+  .hs-color-wrap{display:flex;align-items:center;gap:8px}
+  .hs-color-wrap input[type=color]{width:44px;height:36px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;padding:2px;background:var(--white)}
+  .hs-color-val{font-size:12px;color:var(--text-muted);font-family:'Inter',sans-serif;font-weight:500}
+  .hs-color-presets{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .hs-preset{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s;flex-shrink:0}
+  .hs-preset:hover{transform:scale(1.2);border-color:var(--ink)}
+  .hs-font-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .hs-font-card{background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:.75rem .5rem;text-align:center;cursor:pointer;transition:all .15s}
+  .hs-font-card:hover{border-color:var(--green);background:var(--white)}
+  .hs-font-card.selected{border-color:var(--green);background:var(--white);box-shadow:0 0 0 2px rgba(0,81,58,0.12)}
+  .hs-font-sample{font-size:28px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:4px}
+  .hs-font-name{font-size:11px;font-weight:600;color:var(--ink);font-family:'Inter',sans-serif}
+  .hs-font-tag{font-size:10px;color:var(--text-muted);font-family:'Inter',sans-serif;margin-top:2px}
+  .hs-apply-btn{width:100%;padding:13px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;letter-spacing:.02em;transition:background .15s;margin-bottom:.5rem}
+  .hs-apply-btn:hover{background:var(--green-dark)}
+  .hs-reset-btn{width:100%;padding:10px;background:none;color:var(--text-muted);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;font-family:'Poppins',sans-serif;transition:all .15s}
+  .hs-reset-btn:hover{background:var(--paper);color:var(--ink);border-color:var(--green)}
+
+  /* PREVIEWS */
+  .hs-previews{display:flex;flex-direction:column;gap:1rem;position:sticky;top:80px}
+  .hs-preview-block{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;box-shadow:var(--shadow)}
+  .hs-preview-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-family:'Poppins',sans-serif;margin-bottom:.75rem}
+
+  /* TOPBAR PREVIEW */
+  .hs-prev-topbar{background:var(--green);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--gold)}
+  .hs-prev-topbar-left{display:flex;align-items:center;gap:10px}
+  .hs-prev-logo{background:white;border-radius:6px;padding:3px 6px;display:flex;align-items:center}
+  .hs-prev-divider{width:1px;height:18px;background:rgba(255,255,255,0.3)}
+  .hs-prev-title{font-size:11px;font-weight:700;color:var(--gold);font-family:'Poppins',sans-serif;letter-spacing:.08em;text-transform:uppercase}
+  .hs-prev-topbar-right{display:flex;gap:6px;align-items:center}
+  .hs-prev-badge{font-size:10px;color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.1);padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,0.2)}
+  .hs-prev-btn{font-size:10px;color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);border-radius:6px;padding:3px 8px}
+
+  /* VISITEKAARTJE PREVIEW */
+  .hs-prev-card{background:var(--green);border-radius:12px;padding:1.25rem;min-height:140px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 16px rgba(0,81,58,0.2)}
+  .hs-prev-card-top{}
+  .hs-prev-card-naam{font-size:18px;font-weight:700;color:white;font-family:'Poppins',sans-serif;line-height:1.1}
+  .hs-prev-card-tagline{font-size:11px;color:var(--gold);margin-top:4px;font-family:'Inter',sans-serif}
+  .hs-prev-card-bottom{border-top:1px solid rgba(255,255,255,0.15);padding-top:.75rem;margin-top:.75rem}
+  .hs-prev-card-info{font-size:11px;color:rgba(255,255,255,0.7);font-family:'Inter',sans-serif;margin-bottom:2px}
+
+  /* WEBSITE HEADER PREVIEW */
+  .hs-prev-header{background:var(--white);border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+  .hs-prev-header-inner{display:flex;align-items:center;gap:12px;padding:.75rem 1rem;border-bottom:1px solid var(--border)}
+  .hs-prev-header-naam{font-size:16px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif}
+  .hs-prev-header-tagline{font-size:11px;color:var(--text-muted);font-family:'Inter',sans-serif}
+  .hs-prev-header-nav{display:flex;align-items:center;gap:1rem;padding:.6rem 1rem;background:var(--paper)}
+  .hs-prev-header-nav span{font-size:11px;color:var(--text-muted);font-family:'Poppins',sans-serif;font-weight:500}
+  .hs-prev-nav-cta{background:var(--green);color:white !important;padding:4px 12px;border-radius:20px;font-size:11px !important}
+
+  @media(max-width:768px){
+    .hs-grid{grid-template-columns:1fr}
+    .hs-field-row{grid-template-columns:1fr}
+    .hs-font-grid{grid-template-columns:repeat(3,1fr)}
+    .hs-previews{position:static}
+  }
 
   /* PLANNING */
   .view-toggle{display:flex;gap:0;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;width:fit-content;margin-bottom:1.25rem}
@@ -368,49 +411,24 @@
     <button class="tab" onclick="showTab('doelen')">Doelen & Taken</button>
     <button class="tab" onclick="showTab('notities')">Notities & Besluiten</button>
     <button class="tab" onclick="showTab('planning')">Planning</button>
+    <button class="tab" onclick="showTab('huisstijl')">✦ Huisstijl</button>
   </div>
 
   <!-- MAIN CONTENT -->
   <div class="main">
     <!-- DASHBOARD TAB -->
     <div id="tab-dashboard">
-      <div class="dash-hero">
-        <div class="dash-hero-left">
-          <div class="dash-fase-badge" id="dash-fase-badge">Fase 1 — Fundament</div>
-          <h2 class="dash-hero-title">Voortgang opstarttraject</h2>
-          <p class="dash-hero-sub">VakVerbind — van idee naar operationeel uitzendbureau</p>
-        </div>
-        <div class="dash-hero-right">
-          <div class="dash-ring-wrap">
-            <svg class="dash-ring" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="10"/>
-              <circle cx="60" cy="60" r="50" fill="none" stroke="var(--gold)" stroke-width="10"
-                stroke-dasharray="314" stroke-dashoffset="314"
-                stroke-linecap="round" transform="rotate(-90 60 60)"
-                id="dash-ring-fill" style="transition:stroke-dashoffset .8s ease"/>
-            </svg>
-            <div class="dash-ring-pct" id="dash-ring-pct">0%</div>
-          </div>
-          <div class="dash-ring-label">Totaal voltooid</div>
-        </div>
+      <div class="dash-intro">
+        <h2>Voortgang opstarttraject</h2>
+        <div class="gold-line"></div>
+        <p>Overzicht van alle doelen en taken voor de start van VakVerbind.</p>
       </div>
-      <div class="dash-stats" id="stats-grid"></div>
-      <div class="dash-columns">
-        <div class="dash-block">
-          <div class="dash-block-header"><span class="dash-block-icon">▶</span><h3>Volgende acties</h3></div>
-          <div id="dash-next-actions"></div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:1rem">
-          <div class="dash-block">
-            <div class="dash-block-header"><span class="dash-block-icon">◎</span><h3>Voortgang per doel</h3></div>
-            <div id="dashboard-doelen"></div>
-          </div>
-          <div class="dash-block">
-            <div class="dash-block-header"><span class="dash-block-icon">✎</span><h3>Laatste logboekitem</h3></div>
-            <div id="dash-laatste-notitie"></div>
-          </div>
-        </div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="overall-progress">
+        <h3>Totale voortgang <span id="overall-pct">0%</span></h3>
+        <div class="pbar"><div class="pbar-fill" id="overall-bar" style="width:0%"></div></div>
       </div>
+      <div id="dashboard-doelen"></div>
     </div>
 
     <!-- DOELEN TAB -->
@@ -503,6 +521,184 @@
         <div id="plan-list"></div>
       </div>
     </div>
+    <!-- HUISSTIJL TAB -->
+    <div id="tab-huisstijl" style="display:none">
+
+      <!-- INTRO -->
+      <div class="hs-intro">
+        <h2>Huisstijl Studio</h2>
+        <div class="hs-gold-line"></div>
+        <p>Test kleuren, lettertypes en logo — en pas ze direct toe op het hele projectboard.</p>
+      </div>
+
+      <div class="hs-grid">
+
+        <!-- LINKER KOLOM: INSTELLINGEN -->
+        <div class="hs-settings">
+
+          <!-- KLEUREN -->
+          <div class="hs-block">
+            <div class="hs-block-header">
+              <span class="hs-block-icon">◉</span>
+              <h3>Merkkleur</h3>
+            </div>
+            <div class="hs-field-row">
+              <div class="hs-field">
+                <label>Primaire kleur</label>
+                <div class="hs-color-wrap">
+                  <input type="color" id="hs-primary" value="#00513A" oninput="hsPreview()" />
+                  <span class="hs-color-val" id="hs-primary-val">#00513A</span>
+                </div>
+                <div class="hs-color-presets" id="hs-primary-presets">
+                  <div class="hs-preset" style="background:#00513A" onclick="hsSetColor('hs-primary','#00513A')" title="VakVerbind Groen"></div>
+                  <div class="hs-preset" style="background:#1B4F72" onclick="hsSetColor('hs-primary','#1B4F72')" title="Diepblauw"></div>
+                  <div class="hs-preset" style="background:#2C3E50" onclick="hsSetColor('hs-primary','#2C3E50')" title="Antraciet"></div>
+                  <div class="hs-preset" style="background:#6C3483" onclick="hsSetColor('hs-primary','#6C3483')" title="Paars"></div>
+                  <div class="hs-preset" style="background:#784212" onclick="hsSetColor('hs-primary','#784212')" title="Cognac"></div>
+                  <div class="hs-preset" style="background:#1A5276" onclick="hsSetColor('hs-primary','#1A5276')" title="Staalblauw"></div>
+                </div>
+              </div>
+              <div class="hs-field">
+                <label>Accentkleur</label>
+                <div class="hs-color-wrap">
+                  <input type="color" id="hs-accent" value="#C9A227" oninput="hsPreview()" />
+                  <span class="hs-color-val" id="hs-accent-val">#C9A227</span>
+                </div>
+                <div class="hs-color-presets" id="hs-accent-presets">
+                  <div class="hs-preset" style="background:#C9A227" onclick="hsSetColor('hs-accent','#C9A227')" title="VakVerbind Goud"></div>
+                  <div class="hs-preset" style="background:#E74C3C" onclick="hsSetColor('hs-accent','#E74C3C')" title="Rood"></div>
+                  <div class="hs-preset" style="background:#E67E22" onclick="hsSetColor('hs-accent','#E67E22')" title="Oranje"></div>
+                  <div class="hs-preset" style="background:#27AE60" onclick="hsSetColor('hs-accent','#27AE60')" title="Groen"></div>
+                  <div class="hs-preset" style="background:#2980B9" onclick="hsSetColor('hs-accent','#2980B9')" title="Blauw"></div>
+                  <div class="hs-preset" style="background:#F1C40F" onclick="hsSetColor('hs-accent','#F1C40F')" title="Geel"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LETTERTYPE -->
+          <div class="hs-block">
+            <div class="hs-block-header">
+              <span class="hs-block-icon">Aa</span>
+              <h3>Lettertype</h3>
+            </div>
+            <div class="hs-font-grid" id="hs-font-grid">
+              <div class="hs-font-card selected" onclick="hsSelectFont(this,'Poppins')" data-font="Poppins">
+                <div class="hs-font-sample" style="font-family:'Poppins',sans-serif">Aa</div>
+                <div class="hs-font-name">Poppins</div>
+                <div class="hs-font-tag">Modern</div>
+              </div>
+              <div class="hs-font-card" onclick="hsSelectFont(this,'Playfair Display')" data-font="Playfair Display">
+                <div class="hs-font-sample" style="font-family:'Playfair Display',serif">Aa</div>
+                <div class="hs-font-name">Playfair</div>
+                <div class="hs-font-tag">Klassiek</div>
+              </div>
+              <div class="hs-font-card" onclick="hsSelectFont(this,'Raleway')" data-font="Raleway">
+                <div class="hs-font-sample" style="font-family:'Raleway',sans-serif">Aa</div>
+                <div class="hs-font-name">Raleway</div>
+                <div class="hs-font-tag">Elegant</div>
+              </div>
+              <div class="hs-font-card" onclick="hsSelectFont(this,'Montserrat')" data-font="Montserrat">
+                <div class="hs-font-sample" style="font-family:'Montserrat',sans-serif">Aa</div>
+                <div class="hs-font-name">Montserrat</div>
+                <div class="hs-font-tag">Zakelijk</div>
+              </div>
+              <div class="hs-font-card" onclick="hsSelectFont(this,'Nunito')" data-font="Nunito">
+                <div class="hs-font-sample" style="font-family:'Nunito',sans-serif">Aa</div>
+                <div class="hs-font-name">Nunito</div>
+                <div class="hs-font-tag">Vriendelijk</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- NAAM & TAGLINE -->
+          <div class="hs-block">
+            <div class="hs-block-header">
+              <span class="hs-block-icon">✎</span>
+              <h3>Naam & Tagline</h3>
+            </div>
+            <div class="hs-field" style="margin-bottom:.75rem">
+              <label>Bedrijfsnaam</label>
+              <input type="text" id="hs-naam" value="VakVerbind" placeholder="Jouw bedrijfsnaam..." oninput="hsPreview()" />
+            </div>
+            <div class="hs-field">
+              <label>Tagline <span style="color:var(--text-muted);font-weight:400">(ondertitel)</span></label>
+              <input type="text" id="hs-tagline" value="Verbinding tussen vakmanschap en kans" placeholder="Jouw tagline..." oninput="hsPreview()" />
+            </div>
+          </div>
+
+          <!-- TOEPASSEN KNOP -->
+          <button class="hs-apply-btn" onclick="hsApply()">
+            ✓ Toepassen op projectboard
+          </button>
+          <button class="hs-reset-btn" onclick="hsReset()">
+            ↺ Terugzetten naar origineel
+          </button>
+
+        </div>
+
+        <!-- RECHTER KOLOM: PREVIEWS -->
+        <div class="hs-previews">
+
+          <!-- TOPBAR PREVIEW -->
+          <div class="hs-preview-block">
+            <div class="hs-preview-label">Topbar</div>
+            <div class="hs-prev-topbar" id="prev-topbar">
+              <div class="hs-prev-topbar-left">
+                <div class="hs-prev-logo">
+                  <img src="logo.png" alt="Logo" style="height:28px;width:auto;display:block" />
+                </div>
+                <span class="hs-prev-divider"></span>
+                <span class="hs-prev-title" id="prev-topbar-naam">PROJECTBOARD</span>
+              </div>
+              <div class="hs-prev-topbar-right">
+                <span class="hs-prev-badge">gebruiker@email.nl</span>
+                <span class="hs-prev-btn">Uitloggen</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- VISITEKAARTJE PREVIEW -->
+          <div class="hs-preview-block">
+            <div class="hs-preview-label">Visitekaartje</div>
+            <div class="hs-prev-card" id="prev-card">
+              <div class="hs-prev-card-top">
+                <img src="logo.png" alt="Logo" style="height:40px;width:auto;display:block;margin-bottom:12px" id="prev-card-logo" />
+                <div class="hs-prev-card-naam" id="prev-card-naam">VakVerbind</div>
+                <div class="hs-prev-card-tagline" id="prev-card-tagline">Verbinding tussen vakmanschap en kans</div>
+              </div>
+              <div class="hs-prev-card-bottom">
+                <div class="hs-prev-card-info">marc@vakverbind.nl</div>
+                <div class="hs-prev-card-info">+31 6 00 00 00 00</div>
+                <div class="hs-prev-card-info">vakverbind.nl</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WEBSITE HEADER PREVIEW -->
+          <div class="hs-preview-block">
+            <div class="hs-preview-label">Website header</div>
+            <div class="hs-prev-header" id="prev-header">
+              <div class="hs-prev-header-inner">
+                <img src="logo.png" alt="Logo" style="height:50px;width:auto;display:block" />
+                <div>
+                  <div class="hs-prev-header-naam" id="prev-header-naam">VakVerbind</div>
+                  <div class="hs-prev-header-tagline" id="prev-header-tagline">Verbinding tussen vakmanschap en kans</div>
+                </div>
+              </div>
+              <div class="hs-prev-header-nav">
+                <span>Over ons</span>
+                <span>Diensten</span>
+                <span>Contact</span>
+                <span class="hs-prev-nav-cta" id="prev-nav-cta">Neem contact op</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </div>
@@ -655,36 +851,21 @@ function calcStats() {
 function renderStats() {
   const s=calcStats();
   const pct=s.totalTaken?Math.round(s.afgerond/s.totalTaken*100):0;
-  const circumference=314;
-  const offset=circumference-(pct/100*circumference);
-  const ringFill=document.getElementById('dash-ring-fill');
-  const ringPct=document.getElementById('dash-ring-pct');
-  if(ringFill)ringFill.style.strokeDashoffset=offset;
-  if(ringPct)ringPct.textContent=pct+'%';
-  const faseBadge=document.getElementById('dash-fase-badge');
-  if(faseBadge){if(pct<33)faseBadge.textContent='Fase 1 — Fundament';else if(pct<66)faseBadge.textContent='Fase 2 — Voorbereiding';else faseBadge.textContent='Fase 3 — Operationeel';}
-  const overdue=doelen.flatMap(d=>d.taken).filter(t=>t.deadline&&t.status!=='afgerond'&&new Date(t.deadline)<new Date(new Date().toDateString())).length;
+  document.getElementById('overall-pct').textContent=pct+'%';
+  document.getElementById('overall-bar').style.width=pct+'%';
   document.getElementById('stats-grid').innerHTML=`
-    <div class="dash-stat c-green"><div class="n">${s.totalDoelen}</div><div class="l">Doelen</div></div>
-    <div class="dash-stat c-ink"><div class="n">${s.gepland}</div><div class="l">Gepland</div></div>
-    <div class="dash-stat c-gold"><div class="n">${s.bezig}</div><div class="l">Bezig</div></div>
-    <div class="dash-stat c-${overdue>0?'red':'green'}"><div class="n">${overdue>0?overdue:s.afgerond}</div><div class="l">${overdue>0?'Te laat':'Afgerond'}</div></div>`;
+    <div class="stat-card c-green"><div class="n">${s.totalDoelen}</div><div class="l">Doelen</div><div class="accent-line"></div></div>
+    <div class="stat-card c-ink"><div class="n">${s.gepland}</div><div class="l">Gepland</div><div class="accent-line"></div></div>
+    <div class="stat-card c-gold"><div class="n">${s.bezig}</div><div class="l">Bezig</div><div class="accent-line"></div></div>
+    <div class="stat-card c-green"><div class="n">${s.afgerond}</div><div class="l">Afgerond</div><div class="accent-line"></div></div>`;
 }
 
 function doelProgress(d){if(!d.taken.length)return 0;return Math.round(d.taken.filter(t=>t.status==='afgerond').length/d.taken.length*100);}
 
 function renderDashboardDoelen(){
   const el=document.getElementById('dashboard-doelen');
-  if(!doelen.length){el.innerHTML='<div class="dash-empty">Nog geen doelen aangemaakt.</div>';return;}
-  el.innerHTML=doelen.map(d=>{const pct=doelProgress(d);return`<div class="dash-doel-row"><span class="dash-doel-dot" style="background:${d.kleur}"></span><span class="dash-doel-name">${d.naam}</span><div class="dash-doel-bar"><div class="dash-doel-fill" style="width:${pct}%;background:${d.kleur}"></div></div><span class="dash-doel-pct">${pct}%</span></div>`;}).join('');
-  const acties=doelen.flatMap(d=>d.taken.filter(t=>t.status!=='afgerond').map(t=>({...t,doelNaam:d.naam}))).sort((a,b)=>{if(!a.deadline&&!b.deadline)return 0;if(!a.deadline)return 1;if(!b.deadline)return-1;return a.deadline.localeCompare(b.deadline);}).slice(0,5);
-  const actiesEl=document.getElementById('dash-next-actions');
-  if(!acties.length){actiesEl.innerHTML='<div class="dash-empty">Geen openstaande acties. Goed bezig! 🎉</div>';}
-  else{const today=new Date(new Date().toDateString());actiesEl.innerHTML=acties.map(t=>{const isOverdue=t.deadline&&new Date(t.deadline)<today;const isBezig=t.status==='bezig';const dl=t.deadline?`<div class="next-action-dl">📅 ${isOverdue?'Te laat — ':''}${new Date(t.deadline).toLocaleDateString('nl-NL',{day:'numeric',month:'short'})}</div>`:'';return`<div class="next-action-item"><div class="next-action-dot ${isBezig?'bezig':''}"></div><div><div class="next-action-text">${t.tekst}</div><div class="next-action-doel">${t.doelNaam}</div>${dl}</div></div>`;}).join('');}
-  const notitieEl=document.getElementById('dash-laatste-notitie');
-  if(!notities.length){notitieEl.innerHTML='<div class="dash-empty">Nog geen notities of besluiten.</div>';return;}
-  const n=notities[0];const datum=n.aangemaakt?.toDate?.();const d2=datum?datum.toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'}):'';
-  notitieEl.innerHTML=`<div class="dash-notitie-item"><div class="dash-notitie-type">${n.type==='besluit'?'Besluit':'Notitie'}</div><div class="dash-notitie-titel">${n.titel||'Zonder titel'}</div><div class="dash-notitie-datum">${d2}</div>${n.inhoud?`<div class="dash-notitie-preview">${n.inhoud.replace(/<[^>]*>/g,'').substring(0,100)}</div>`:''}</div>`;
+  if(!doelen.length){el.innerHTML='<div class="empty-state">Nog geen doelen. Ga naar "Doelen & Taken" om te starten.</div>';return;}
+  el.innerHTML=doelen.map(d=>{const pct=doelProgress(d);return`<div class="doel-card" style="margin-bottom:.6rem"><div class="doel-header" style="cursor:default"><span class="doel-color" style="background:${d.kleur}"></span><span class="doel-name">${d.naam}</span><div class="doel-prog-wrap"><div class="doel-prog-bar"><div class="doel-prog-fill" style="width:${pct}%;background:${d.kleur}"></div></div><span class="doel-prog-pct">${pct}%</span></div></div></div>`;}).join('');
 }
 
 function renderDoelenList(){
@@ -721,7 +902,7 @@ window.saveDoel=async()=>{const naam=document.getElementById('modal-naam').value
 document.getElementById('modal-naam').addEventListener('keydown',e=>{if(e.key==='Enter')window.saveDoel();});
 
 // Tabs
-window.showTab=(tab)=>{['dashboard','doelen','notities','planning'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none');document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(['dashboard','doelen','notities','planning'][i])===tab));};
+window.showTab=(tab)=>{['dashboard','doelen','notities','planning','huisstijl'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none');document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(['dashboard','doelen','notities','planning','huisstijl'][i])===tab));};
 
 // Wachtwoord wijzigen
 window.openPwModal=()=>{
