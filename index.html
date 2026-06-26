@@ -5,3 +5,919 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>VV Projectboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --green:#00513A;--green-dark:#003D2B;
+    --gold:#C9A227;--gold-soft:#E7D2A0;
+    --ink:#1A1A1A;--paper:#F8F5EE;
+    --white:#FFFFFF;
+    --border:#DDD9CE;--text-muted:#6B7260;
+    --radius:16px;--radius-sm:10px;
+    --shadow:0 1px 4px rgba(0,81,58,0.07),0 1px 2px rgba(0,81,58,0.04);
+    --shadow-md:0 4px 16px rgba(0,81,58,0.10),0 2px 6px rgba(0,81,58,0.06);
+    --red:#C0392B;--red-light:#FDECEA;
+  }
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
+  h1,h2,h3,.tab,.btn-primary,.btn-add-doel,.btn-add-taak,.btn-save{font-family:'Poppins',sans-serif}
+
+  /* AUTH */
+  #auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;background:var(--paper)}
+  .auth-card{background:var(--white);border-radius:20px;box-shadow:var(--shadow-md);padding:2.75rem;width:100%;max-width:420px;border:1px solid var(--border)}
+  .auth-logo{text-align:center;margin-bottom:2rem}
+  .auth-logo .vv-logo{width:200px;margin:0 auto;display:block}
+  .auth-logo p{font-size:13px;color:var(--text-muted);margin-top:12px;font-family:'Inter',sans-serif}
+  .auth-divider{width:40px;height:2px;background:var(--gold);border-radius:2px;margin:.75rem auto 0}
+  .form-group{margin-bottom:1rem}
+  .form-group label{display:block;font-size:13px;font-weight:500;color:var(--ink);margin-bottom:6px;font-family:'Poppins',sans-serif}
+  .form-group input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--ink);background:var(--white);transition:border-color .15s;font-family:'Inter',sans-serif}
+  .form-group input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(0,81,58,0.08)}
+  .btn-primary{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;transition:background .15s;letter-spacing:.02em}
+  .btn-primary:hover{background:var(--green-dark)}
+  .btn-primary:disabled{background:#7FA899;cursor:not-allowed}
+  .auth-error{background:var(--red-light);color:var(--red);border:1px solid #F5C6C0;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:1rem;display:none}
+
+  /* APP */
+  #app-screen{display:none;min-height:100vh}
+  .topbar{background:var(--green);border-bottom:3px solid var(--gold);padding:0 2rem;height:66px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,81,58,0.18)}
+  .topbar-left{display:flex;align-items:center;gap:16px}
+  .topbar-left .vv-logo{height:44px;width:auto;display:block;background:white;border-radius:10px;padding:5px 10px;box-shadow:0 1px 6px rgba(0,0,0,0.15)}
+  .topbar-divider{width:1.5px;height:26px;background:rgba(255,255,255,0.25);margin:0 2px}
+  .topbar-subtitle{font-size:13px;font-weight:700;color:var(--gold);font-family:'Poppins',sans-serif;letter-spacing:.08em;text-transform:uppercase}
+  .topbar-right{display:flex;align-items:center;gap:10px}
+  .user-badge{font-size:12px;color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.1);padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);font-family:'Inter',sans-serif}
+  .btn-logout{font-size:13px;color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.25);border-radius:var(--radius-sm);padding:5px 14px;cursor:pointer;transition:all .15s;font-family:'Poppins',sans-serif;font-weight:500}
+  .btn-logout:hover{background:rgba(255,255,255,0.2);color:var(--white);border-color:rgba(255,255,255,0.5)}
+  .btn-pw{font-size:13px;color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.25);border-radius:var(--radius-sm);padding:5px 14px;cursor:pointer;transition:all .15s;font-family:'Poppins',sans-serif;font-weight:500}
+  .btn-pw:hover{background:rgba(255,255,255,0.2);color:var(--white);border-color:rgba(255,255,255,0.5)}
+  .pw-msg{font-size:13px;padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:1rem;display:none}
+  .pw-msg.error{background:var(--red-light);color:var(--red);border:1px solid #F5C6C0;display:block}
+  .pw-msg.success{background:#EAF3EE;color:var(--green);border:1px solid #B5D4C4;display:block}
+
+  /* TABS */
+  .tabs{display:flex;border-bottom:1.5px solid var(--border);background:var(--white);padding:0 2rem}
+  .tab{padding:14px 18px;font-size:13px;font-weight:600;color:var(--text-muted);border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;transition:all .15s;letter-spacing:.02em}
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--green);border-bottom-color:var(--gold)}
+
+  /* MAIN */
+  .main{padding:2rem;max-width:920px;margin:0 auto}
+
+  /* DASHBOARD */
+  .dash-intro{margin-bottom:1.5rem}
+  .dash-intro h2{font-size:20px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif}
+  .dash-intro p{font-size:13px;color:var(--text-muted);margin-top:4px}
+  .gold-line{width:36px;height:2.5px;background:var(--gold);border-radius:2px;margin:.6rem 0}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1.5rem}
+  .stat-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;box-shadow:var(--shadow)}
+  .stat-card .n{font-size:28px;font-weight:700;line-height:1;font-family:'Poppins',sans-serif}
+  .stat-card .l{font-size:12px;color:var(--text-muted);margin-top:5px;font-weight:500}
+  .stat-card.c-green .n{color:var(--green)}
+  .stat-card.c-gold .n{color:var(--gold)}
+  .stat-card.c-ink .n{color:var(--ink)}
+  .stat-card .accent-line{width:24px;height:2px;background:var(--gold);border-radius:2px;margin-top:8px}
+
+  .overall-progress{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.4rem 1.6rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+  .overall-progress h3{font-size:14px;font-weight:600;color:var(--green);margin-bottom:.9rem;display:flex;justify-content:space-between;font-family:'Poppins',sans-serif}
+  .overall-progress h3 span{color:var(--gold);font-weight:700}
+  .pbar{height:8px;background:var(--paper);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+  .pbar-fill{height:100%;background:var(--green);border-radius:4px;transition:width .5s ease}
+
+  /* DOELEN */
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+  .section-header h2{font-size:16px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif}
+  .btn-add-doel{display:flex;align-items:center;gap:6px;padding:9px 16px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;letter-spacing:.02em}
+  .btn-add-doel:hover{background:var(--green-dark)}
+
+  .doel-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:.85rem;box-shadow:var(--shadow);overflow:hidden}
+  .doel-header{display:flex;align-items:center;gap:12px;padding:1rem 1.4rem;cursor:pointer;transition:background .1s}
+  .doel-header:hover{background:var(--paper)}
+  .doel-color{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+  .doel-name{font-size:15px;font-weight:600;flex:1;font-family:'Poppins',sans-serif;color:var(--ink)}
+  .doel-prog-wrap{display:flex;align-items:center;gap:8px}
+  .doel-prog-bar{width:80px;height:5px;background:var(--paper);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+  .doel-prog-fill{height:100%;border-radius:3px;transition:width .4s}
+  .doel-prog-pct{font-size:12px;color:var(--text-muted);min-width:32px;text-align:right;font-weight:600;font-family:'Poppins',sans-serif}
+  .doel-chevron{color:var(--text-muted);font-size:18px;transition:transform .2s;line-height:1}
+  .doel-chevron.open{transform:rotate(180deg)}
+  .doel-btns{display:flex;gap:4px;margin-left:8px}
+  .doel-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:3px 5px;border-radius:6px;opacity:0;transition:all .15s;line-height:1}
+  .doel-header:hover .doel-btn{opacity:1}
+  .doel-btn:hover{background:var(--paper);color:var(--ink)}
+  .doel-btn.del:hover{color:var(--red)}
+  .doel-actions-wrap{border-top:1.5px solid var(--border)}
+
+  /* TAKEN */
+  .taak-row{display:flex;align-items:center;gap:10px;padding:.7rem 1.4rem;border-bottom:1px solid var(--border);transition:background .1s}
+  .taak-row:last-child{border-bottom:none}
+  .taak-row:hover{background:var(--paper)}
+  .taak-check{width:18px;height:18px;border-radius:5px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:var(--white)}
+  .taak-check.checked{background:var(--green);border-color:var(--green)}
+  .taak-check.checked::after{content:'\2713';color:white;font-size:11px;font-weight:700}
+  .taak-text{flex:1;font-size:14px;color:var(--ink)}
+  .taak-text.done{text-decoration:line-through;color:var(--text-muted)}
+  .status-pill{font-size:11px;font-weight:600;padding:3px 11px;border-radius:20px;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;font-family:'Poppins',sans-serif;letter-spacing:.02em}
+  .s-gepland{background:var(--paper);color:var(--green);border:1.5px solid var(--border)}
+  .s-bezig{background:#FEF6E0;color:#9A6E10;border:1.5px solid var(--gold-soft)}
+  .s-afgerond{background:#EAF3EE;color:var(--green);border:1.5px solid #B5D4C4}
+  .taak-del{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;padding:2px 4px;opacity:0;transition:opacity .15s;line-height:1}
+  .taak-row:hover .taak-del{opacity:1}
+  .taak-del:hover{color:var(--red)}
+
+  /* ADD TAAK */
+  .add-taak-wrap{padding:.85rem 1.4rem;background:var(--paper);border-top:1.5px solid var(--border)}
+  .add-taak-form{display:flex;gap:8px}
+  .add-taak-form input{flex:1;padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--white);color:var(--ink);font-family:'Inter',sans-serif}
+  .add-taak-form input:focus{outline:none;border-color:var(--green)}
+  .add-taak-form select{padding:9px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--white);color:var(--ink);font-family:'Inter',sans-serif}
+  .add-taak-form select:focus{outline:none;border-color:var(--green)}
+  .btn-add-taak{padding:9px 16px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif}
+  .btn-add-taak:hover{background:var(--green-dark)}
+
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,81,58,0.35);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(2px)}
+  .modal{background:var(--white);border-radius:20px;padding:2.1rem;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,81,58,0.18)}
+  .modal h3{font-size:17px;font-weight:700;color:var(--green);margin-bottom:.4rem;font-family:'Poppins',sans-serif}
+  .modal-gold{width:28px;height:2px;background:var(--gold);border-radius:2px;margin-bottom:1.25rem}
+  .modal input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--ink);margin-bottom:1rem;font-family:'Inter',sans-serif}
+  .modal input:focus{outline:none;border-color:var(--green)}
+  .color-picker{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+  .color-dot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .15s}
+  .color-dot.selected{border-color:var(--ink);transform:scale(1.15)}
+  .modal-btns{display:flex;gap:8px;justify-content:flex-end}
+  .btn-cancel{padding:9px 18px;background:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;cursor:pointer;color:var(--ink);font-family:'Poppins',sans-serif;font-weight:500}
+  .btn-cancel:hover{background:var(--paper)}
+  .btn-save{padding:9px 20px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+  .btn-save:hover{background:var(--green-dark)}
+
+  .empty-state{text-align:center;padding:3rem 1rem;color:var(--text-muted);font-size:14px}
+  .loading{text-align:center;padding:3rem;color:var(--text-muted);font-size:14px}
+
+  /* NOTITIES */
+  .notities-toolbar{display:flex;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center}
+  .notities-toolbar input{flex:1;min-width:180px;padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--white);color:var(--ink)}
+  .notities-toolbar input:focus{outline:none;border-color:var(--green)}
+  .filter-btns{display:flex;gap:4px}
+  .filter-btn{padding:6px 14px;font-size:12px;font-weight:600;border:1.5px solid var(--border);border-radius:20px;background:var(--white);color:var(--text-muted);cursor:pointer;font-family:'Poppins',sans-serif;transition:all .15s}
+  .filter-btn.active{background:var(--green);color:var(--white);border-color:var(--green)}
+  .filter-btn:hover:not(.active){background:var(--paper);color:var(--ink)}
+  .notitie-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:.75rem;box-shadow:var(--shadow);overflow:hidden;transition:background .1s}
+  .notitie-card:hover{background:var(--paper)}
+  .notitie-header{display:flex;align-items:flex-start;gap:12px;padding:1.1rem 1.4rem;cursor:pointer}
+  .notitie-type{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:2px;font-family:'Poppins',sans-serif}
+  .type-notitie{background:var(--paper);color:var(--green);border:1.5px solid var(--border)}
+  .type-besluit{background:#FEF6E0;color:#9A6E10;border:1.5px solid var(--gold-soft)}
+  .notitie-info{flex:1;min-width:0}
+  .notitie-title{font-size:15px;font-weight:600;color:var(--ink);font-family:'Poppins',sans-serif}
+  .notitie-meta{font-size:12px;color:var(--text-muted);margin-top:3px}
+  .notitie-preview{font-size:13px;color:var(--text-muted);margin-top:6px;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .notitie-btns{display:flex;gap:4px;flex-shrink:0}
+  .notitie-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:3px 5px;border-radius:6px;opacity:0;transition:all .15s;line-height:1}
+  .notitie-card:hover .notitie-btn{opacity:1}
+  .notitie-btn:hover{background:var(--white);color:var(--ink)}
+  .notitie-btn.del:hover{color:var(--red)}
+  .notitie-body{padding:0 1.4rem 1.1rem;font-size:14px;line-height:1.7;color:var(--ink);border-top:1px solid var(--border);padding-top:1rem;margin-top:0}
+  .notitie-body p{margin-bottom:.5rem}
+  .notitie-form{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.4rem;margin-bottom:1rem}
+  .notitie-form h3{font-size:16px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif;margin-bottom:.4rem}
+  .notitie-form .modal-gold{width:28px;height:2px;background:var(--gold);border-radius:2px;margin-bottom:1rem}
+  .nf-row{display:flex;gap:10px;margin-bottom:.75rem;flex-wrap:wrap}
+  .nf-row input{flex:1;min-width:180px;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--ink);font-family:'Poppins',sans-serif;font-weight:500}
+  .nf-row input:focus{outline:none;border-color:var(--green)}
+  .nf-row select{padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--white);color:var(--ink)}
+  .nf-row select:focus{outline:none;border-color:var(--green)}
+  .nf-textarea{width:100%;min-height:120px;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--ink);font-family:'Inter',sans-serif;line-height:1.6;resize:vertical;margin-bottom:.75rem}
+  .nf-textarea:focus{outline:none;border-color:var(--green)}
+  .nf-footer{display:flex;gap:8px;justify-content:flex-end}
+
+  /* PLANNING */
+  .view-toggle{display:flex;gap:0;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;width:fit-content;margin-bottom:1.25rem}
+  .view-btn{padding:8px 16px;font-size:12px;font-weight:600;color:var(--text-muted);background:var(--white);border:none;cursor:pointer;font-family:'Poppins',sans-serif;transition:all .15s}
+  .view-btn.active{background:var(--green);color:var(--white)}
+  .view-btn:hover:not(.active){background:var(--paper)}
+  .timeline-wrap{position:relative;padding:2rem 0 1rem;overflow-x:auto}
+  .timeline-track{position:relative;min-height:140px;min-width:600px}
+  .tl-line{position:absolute;top:60px;left:20px;right:20px;height:3px;background:var(--border);border-radius:2px}
+  .tl-months{display:flex;justify-content:space-between;position:absolute;top:72px;left:20px;right:20px}
+  .tl-month{font-size:11px;color:var(--text-muted)}
+  .tl-item{position:absolute;cursor:pointer;text-align:center}
+  .tl-dot{width:20px;height:20px;border-radius:50%;margin:0 auto;border:2.5px solid var(--white);box-shadow:var(--shadow)}
+  .tl-dot.s-afgerond{background:var(--green)}
+  .tl-dot.s-bezig{background:var(--gold)}
+  .tl-dot.s-gepland{background:var(--border)}
+  .tl-dot.s-overdue{background:var(--red)}
+  .tl-label{font-size:11px;font-weight:500;color:var(--ink);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:4px}
+  .tl-date{font-size:10px;color:var(--text-muted)}
+  .plan-row{display:flex;align-items:center;gap:10px;padding:.75rem 1.4rem;border-bottom:1px solid var(--border);background:var(--white);border-radius:var(--radius);margin-bottom:4px;box-shadow:var(--shadow);transition:background .1s}
+  .plan-row:hover{background:var(--paper)}
+  .plan-date{font-size:12px;color:var(--text-muted);min-width:56px;font-variant-numeric:tabular-nums;font-weight:500}
+  .plan-date.overdue{color:var(--red);font-weight:600}
+  .plan-info{flex:1;min-width:0}
+  .plan-title{font-size:14px;font-weight:500;color:var(--ink)}
+  .plan-title.done{text-decoration:line-through;color:var(--text-muted)}
+  .plan-doel{font-size:11px;color:var(--text-muted);margin-top:2px}
+  .plan-status{font-size:11px;font-weight:600;padding:3px 11px;border-radius:20px;cursor:pointer;border:none;font-family:'Poppins',sans-serif;white-space:nowrap;transition:all .15s}
+  .plan-btns{display:flex;gap:4px}
+  .plan-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:3px 5px;border-radius:6px;opacity:0;transition:all .15s;line-height:1}
+  .plan-row:hover .plan-btn{opacity:1}
+  .plan-btn:hover{background:var(--white);color:var(--ink)}
+  .plan-btn.del:hover{color:var(--red)}
+  .plan-form{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.4rem;margin-bottom:1rem}
+  .plan-form h3{font-size:16px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif;margin-bottom:.4rem}
+  .pf-row{display:flex;gap:10px;margin-bottom:.75rem;flex-wrap:wrap}
+  .pf-row input,.pf-row select{padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;color:var(--ink)}
+  .pf-row input{flex:1;min-width:160px;font-family:'Poppins',sans-serif;font-weight:500}
+  .pf-row input:focus,.pf-row select:focus{outline:none;border-color:var(--green)}
+  .pf-row input[type=date]{font-family:'Inter',sans-serif}
+  .taak-deadline{padding:3px 6px;border:1.5px solid var(--border);border-radius:6px;font-size:11px;color:var(--text-muted);background:var(--white);cursor:pointer;font-family:'Inter',sans-serif;min-width:32px;text-align:center}
+  .taak-deadline:focus{outline:none;border-color:var(--green)}
+  .taak-deadline.has-date{color:var(--green);border-color:var(--green);font-weight:500}
+  .taak-deadline.overdue{color:var(--red);border-color:var(--red)}
+
+  /* TABLET */
+  @media(max-width:768px){
+    .stats-grid{grid-template-columns:repeat(2,1fr)}
+    .topbar{padding:0 1rem;height:56px}
+    .topbar-left .vv-logo{height:32px}
+    .topbar-subtitle{font-size:11px;letter-spacing:.05em}
+    .tabs{padding:0 1rem}
+    .main{padding:1.25rem}
+    .btn-pw{display:none}
+    .section-header{flex-wrap:wrap;gap:8px}
+  }
+
+  /* MOBIEL */
+  @media(max-width:480px){
+    .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+    .stat-card{padding:.85rem 1rem}
+    .stat-card .n{font-size:22px}
+    .topbar{padding:0 .75rem;height:50px;gap:8px}
+    .topbar-left{gap:8px}
+    .topbar-left .vv-logo{height:28px}
+    .topbar-divider{display:none}
+    .topbar-subtitle{display:none}
+    .topbar-right{gap:6px}
+    .user-badge{display:none}
+    .btn-logout{font-size:12px;padding:4px 10px}
+    .tabs{padding:0 .75rem}
+    .tab{padding:12px 12px;font-size:12px}
+    .main{padding:.75rem}
+    .overall-progress{padding:1rem 1.2rem}
+    .doel-header{padding:.85rem 1rem;gap:8px}
+    .doel-name{font-size:14px}
+    .doel-prog-bar{width:50px}
+    .doel-btns{gap:2px}
+    .taak-row{padding:.6rem 1rem;gap:8px}
+    .taak-text{font-size:13px}
+    .status-pill{font-size:10px;padding:2px 8px}
+    .add-taak-wrap{padding:.6rem 1rem}
+    .add-taak-form{flex-wrap:wrap}
+    .add-taak-form input{min-width:0;flex:1 1 100%}
+    .add-taak-form select{flex:1}
+    .btn-add-taak{flex:1}
+    .auth-card{padding:1.75rem;margin:.5rem}
+    .auth-logo .vv-logo{width:150px}
+    .modal{padding:1.5rem;margin:.5rem;border-radius:16px}
+    .section-header h2{font-size:14px}
+    .btn-add-doel{font-size:12px;padding:7px 12px}
+    .dash-intro h2{font-size:17px}
+    .notitie-header{padding:.85rem 1rem;gap:8px}
+    .notitie-title{font-size:14px}
+    .notitie-body{padding:0 1rem 1rem}
+    .nf-row{flex-direction:column}
+    .pf-row{flex-direction:column}
+    .plan-row{padding:.6rem 1rem}
+    .timeline-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== AUTH SCREEN ==================== -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img class="vv-logo" src="logo.png" alt="VakVerbind" />
+      <div class="auth-divider"></div>
+      <p>Projectboard — log in om verder te gaan</p>
+    </div>
+    <div class="auth-error" id="auth-error"></div>
+    <div class="form-group">
+      <label>E-mailadres</label>
+      <input type="email" id="email" placeholder="jouw@email.nl" />
+    </div>
+    <div class="form-group">
+      <label>Wachtwoord</label>
+      <input type="password" id="password" placeholder="••••••••" />
+    </div>
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">Inloggen</button>
+  </div>
+</div>
+
+<!-- ==================== APP SCREEN ==================== -->
+<div id="app-screen">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <img class="vv-logo" src="logo.png" alt="VakVerbind" />
+      <div class="topbar-divider"></div>
+      <span class="topbar-subtitle">Projectboard</span>
+    </div>
+    <div class="topbar-right">
+      <span class="user-badge" id="user-email"></span>
+      <button class="btn-pw" onclick="openPwModal()">Wachtwoord wijzigen</button>
+      <button class="btn-logout" onclick="doLogout()">Uitloggen</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="tab" onclick="showTab('doelen')">Doelen & Taken</button>
+    <button class="tab" onclick="showTab('notities')">Notities & Besluiten</button>
+    <button class="tab" onclick="showTab('planning')">Planning</button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard">
+      <div class="dash-intro">
+        <h2>Voortgang opstarttraject</h2>
+        <div class="gold-line"></div>
+        <p>Overzicht van alle doelen en taken voor de start van VakVerbind.</p>
+      </div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div class="overall-progress">
+        <h3>Totale voortgang <span id="overall-pct">0%</span></h3>
+        <div class="pbar"><div class="pbar-fill" id="overall-bar" style="width:0%"></div></div>
+      </div>
+      <div id="dashboard-doelen"></div>
+    </div>
+
+    <!-- DOELEN TAB -->
+    <div id="tab-doelen" style="display:none">
+      <div class="section-header">
+        <h2>Doelen & Taken</h2>
+        <button class="btn-add-doel" onclick="openAddDoel()">+ Doel toevoegen</button>
+      </div>
+      <div id="doelen-list"><div class="loading">Laden...</div></div>
+    </div>
+
+    <!-- NOTITIES TAB -->
+    <div id="tab-notities" style="display:none">
+      <!-- ADD/EDIT FORM -->
+      <div class="notitie-form" id="notitie-form" style="display:none">
+        <h3 id="nf-title">Nieuwe notitie</h3>
+        <div class="modal-gold"></div>
+        <div class="nf-row">
+          <input type="text" id="nf-titel" placeholder="Titel (bijv. 'Besluit KvK-inschrijving')" />
+          <select id="nf-type">
+            <option value="notitie">Notitie</option>
+            <option value="besluit">Besluit</option>
+          </select>
+        </div>
+        <textarea class="nf-textarea" id="nf-inhoud" placeholder="Schrijf hier de inhoud..."></textarea>
+        <div class="nf-footer">
+          <button class="btn-cancel" onclick="closeNotitieForm()">Annuleren</button>
+          <button class="btn-save" onclick="saveNotitie()">Opslaan</button>
+        </div>
+      </div>
+
+      <!-- TOOLBAR -->
+      <div class="section-header">
+        <h2>Notities & Besluiten</h2>
+        <button class="btn-add-doel" onclick="openNotitieForm()">+ Toevoegen</button>
+      </div>
+      <div class="notities-toolbar">
+        <input type="text" id="notitie-zoek" placeholder="Zoeken in notities..." oninput="renderNotities()" />
+        <div class="filter-btns">
+          <button class="filter-btn active" onclick="setFilter('alle')">Alle</button>
+          <button class="filter-btn" onclick="setFilter('notitie')">Notities</button>
+          <button class="filter-btn" onclick="setFilter('besluit')">Besluiten</button>
+        </div>
+      </div>
+
+      <!-- LIST -->
+      <div id="notities-list"></div>
+    </div>
+
+    <!-- PLANNING TAB -->
+    <div id="tab-planning" style="display:none">
+      <!-- ADD/EDIT FORM -->
+      <div class="plan-form" id="plan-form" style="display:none">
+        <h3 id="pf-title">Nieuw planning-item</h3>
+        <div class="modal-gold"></div>
+        <div class="pf-row">
+          <input type="text" id="pf-titel" placeholder="Wat moet er gebeuren?" />
+          <input type="date" id="pf-deadline" />
+        </div>
+        <div class="pf-row">
+          <select id="pf-status">
+            <option value="gepland">Gepland</option>
+            <option value="bezig">Bezig</option>
+            <option value="afgerond">Afgerond</option>
+          </select>
+          <select id="pf-doel">
+            <option value="">Geen doel gekoppeld</option>
+          </select>
+        </div>
+        <div class="nf-footer">
+          <button class="btn-cancel" onclick="closePlanForm()">Annuleren</button>
+          <button class="btn-save" onclick="savePlanItem()">Opslaan</button>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2>Planning & Deadlines</h2>
+        <button class="btn-add-doel" onclick="openPlanForm()">+ Item toevoegen</button>
+      </div>
+
+      <div class="view-toggle">
+        <button class="view-btn active" id="vbtn-timeline" onclick="setPlanView('timeline')">Tijdlijn</button>
+        <button class="view-btn" id="vbtn-list" onclick="setPlanView('list')">Lijst</button>
+      </div>
+
+      <div id="plan-timeline-view">
+        <div class="timeline-wrap"><div class="timeline-track" id="timeline-track"></div></div>
+      </div>
+      <div id="plan-list-view" style="display:none">
+        <div id="plan-list"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== MODAL ==================== -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal">
+    <h3>Nieuw doel toevoegen</h3>
+    <div class="modal-gold"></div>
+    <input type="text" id="modal-naam" placeholder="Naam van het doel..." />
+    <div class="color-picker" id="color-picker"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModalDirect()">Annuleren</button>
+      <button class="btn-save" onclick="saveDoel()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== WACHTWOORD MODAL ==================== -->
+<div class="modal-overlay" id="pw-modal" style="display:none" onclick="if(event.target.id==='pw-modal')closePwModal()">
+  <div class="modal">
+    <h3>Wachtwoord wijzigen</h3>
+    <div class="modal-gold"></div>
+    <div class="pw-msg" id="pw-msg"></div>
+    <input type="password" id="pw-current" placeholder="Huidig wachtwoord" />
+    <input type="password" id="pw-new" placeholder="Nieuw wachtwoord" />
+    <input type="password" id="pw-confirm" placeholder="Bevestig nieuw wachtwoord" />
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closePwModal()">Annuleren</button>
+      <button class="btn-save" id="pw-save-btn" onclick="changePw()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FIREBASE ==================== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD-L4C73-koH0wONPgMq9lI-Oi88diYfTE",
+  authDomain: "roadmap-uitzendbureau.firebaseapp.com",
+  projectId: "roadmap-uitzendbureau",
+  storageBucket: "roadmap-uitzendbureau.firebasestorage.app",
+  messagingSenderId: "336499917608",
+  appId: "1:336499917608:web:77c46d154272027430861d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const COLORS = ['#00513A','#C9A227','#1A6B4A','#8B5E0A','#2E5D4B','#A67C52','#4A7C6F','#6B4226'];
+let selectedColor = COLORS[0];
+let doelen = [];
+let notities = [];
+let unsubDoelen = null;
+let unsubNotities = null;
+let notitieFilter = 'alle';
+let editingNotitieId = null;
+let planItems = [];
+let unsubPlan = null;
+let planView = 'timeline';
+let editingPlanId = null;
+
+// Color picker
+const cp = document.getElementById('color-picker');
+COLORS.forEach(c => {
+  const d = document.createElement('div');
+  d.className = 'color-dot' + (c === selectedColor ? ' selected' : '');
+  d.style.background = c;
+  d.onclick = () => {
+    selectedColor = c;
+    document.querySelectorAll('.color-dot').forEach(x => x.classList.remove('selected'));
+    d.classList.add('selected');
+  };
+  cp.appendChild(d);
+});
+
+// Auth
+window.doLogin = async () => {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('auth-error');
+  err.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Inloggen...';
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch(e) {
+    err.textContent = 'Inloggen mislukt. Controleer je e-mail en wachtwoord.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Inloggen';
+  }
+};
+
+window.doLogout = () => signOut(auth);
+
+document.getElementById('password').addEventListener('keydown', e => {
+  if(e.key === 'Enter') window.doLogin();
+});
+
+onAuthStateChanged(auth, user => {
+  if(user) {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+    document.getElementById('user-email').textContent = user.email;
+    startListening();
+  } else {
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('login-btn').disabled = false;
+    document.getElementById('login-btn').textContent = 'Inloggen';
+    if(unsubDoelen) { unsubDoelen(); unsubDoelen = null; }
+    if(unsubNotities) { unsubNotities(); unsubNotities = null; }
+    if(unsubPlan) { unsubPlan(); unsubPlan = null; }
+  }
+});
+
+// Realtime data
+function startListening() {
+  const q = query(collection(db, 'doelen'), orderBy('aangemaakt'));
+  unsubDoelen = onSnapshot(q, snap => {
+    doelen = snap.docs.map(d => ({ id: d.id, ...d.data(), taken: d.data().taken || [] }));
+    render();
+  });
+  const qn = query(collection(db, 'notities'), orderBy('aangemaakt','desc'));
+  unsubNotities = onSnapshot(qn, snap => {
+    notities = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderNotities();
+  });
+  const qp = query(collection(db, 'planning'), orderBy('deadline'));
+  unsubPlan = onSnapshot(qp, snap => {
+    planItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderPlanning();
+  });
+}
+
+function render() { renderStats(); renderDashboardDoelen(); renderDoelenList(); renderPlanning(); }
+
+function calcStats() {
+  let totalTaken=0,gepland=0,bezig=0,afgerond=0;
+  doelen.forEach(d=>d.taken.forEach(t=>{totalTaken++;if(t.status==='gepland')gepland++;else if(t.status==='bezig')bezig++;else afgerond++;}));
+  return{totalDoelen:doelen.length,totalTaken,gepland,bezig,afgerond};
+}
+
+function renderStats() {
+  const s=calcStats();
+  const pct=s.totalTaken?Math.round(s.afgerond/s.totalTaken*100):0;
+  document.getElementById('overall-pct').textContent=pct+'%';
+  document.getElementById('overall-bar').style.width=pct+'%';
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat-card c-green"><div class="n">${s.totalDoelen}</div><div class="l">Doelen</div><div class="accent-line"></div></div>
+    <div class="stat-card c-ink"><div class="n">${s.gepland}</div><div class="l">Gepland</div><div class="accent-line"></div></div>
+    <div class="stat-card c-gold"><div class="n">${s.bezig}</div><div class="l">Bezig</div><div class="accent-line"></div></div>
+    <div class="stat-card c-green"><div class="n">${s.afgerond}</div><div class="l">Afgerond</div><div class="accent-line"></div></div>`;
+}
+
+function doelProgress(d){if(!d.taken.length)return 0;return Math.round(d.taken.filter(t=>t.status==='afgerond').length/d.taken.length*100);}
+
+function renderDashboardDoelen(){
+  const el=document.getElementById('dashboard-doelen');
+  if(!doelen.length){el.innerHTML='<div class="empty-state">Nog geen doelen. Ga naar "Doelen & Taken" om te starten.</div>';return;}
+  el.innerHTML=doelen.map(d=>{const pct=doelProgress(d);return`<div class="doel-card" style="margin-bottom:.6rem"><div class="doel-header" style="cursor:default"><span class="doel-color" style="background:${d.kleur}"></span><span class="doel-name">${d.naam}</span><div class="doel-prog-wrap"><div class="doel-prog-bar"><div class="doel-prog-fill" style="width:${pct}%;background:${d.kleur}"></div></div><span class="doel-prog-pct">${pct}%</span></div></div></div>`;}).join('');
+}
+
+function renderDoelenList(){
+  const el=document.getElementById('doelen-list');
+  if(!doelen.length){el.innerHTML='<div class="empty-state">Nog geen doelen. Klik op "+ Doel toevoegen" om te starten.</div>';return;}
+  el.innerHTML=doelen.map(d=>{
+    const pct=doelProgress(d);const open=d._open!==false;
+    return`<div class="doel-card"><div class="doel-header" onclick="toggleDoel('${d.id}')"><span class="doel-color" style="background:${d.kleur}"></span><span class="doel-name">${d.naam}</span><div class="doel-prog-wrap"><div class="doel-prog-bar"><div class="doel-prog-fill" style="width:${pct}%;background:${d.kleur}"></div></div><span class="doel-prog-pct">${pct}%</span><div class="doel-btns"><button class="doel-btn" onclick="event.stopPropagation();renameDoel('${d.id}')" title="Hernoemen">&#9998;</button><button class="doel-btn del" onclick="event.stopPropagation();delDoel('${d.id}')" title="Verwijderen">&times;</button></div><span class="doel-chevron ${open?'open':''}">&#8964;</span></div></div>${open?`<div class="doel-actions-wrap">${d.taken.map((t,i)=>{const dlClass=t.deadline?(t.status!=='afgerond'&&new Date(t.deadline)<new Date(new Date().toDateString())?'overdue has-date':'has-date'):'';return`<div class="taak-row"><div class="taak-check ${t.status==='afgerond'?'checked':''}" onclick="toggleCheck('${d.id}',${i})"></div><span class="taak-text ${t.status==='afgerond'?'done':''}">${t.tekst}</span><input type="date" class="taak-deadline ${dlClass}" value="${t.deadline||''}" onchange="setTaakDeadline('${d.id}',${i},this.value)" title="Deadline instellen"/><button class="status-pill s-${t.status}" onclick="cycleStatus('${d.id}',${i})">${t.status}</button><button class="taak-del" onclick="delTaak('${d.id}',${i})">&times;</button></div>`;}).join('')}<div class="add-taak-wrap"><div class="add-taak-form"><input type="text" id="taak-input-${d.id}" placeholder="Nieuwe taak omschrijven..." onkeydown="if(event.key==='Enter')addTaak('${d.id}')"/><select id="taak-status-${d.id}"><option value="gepland">gepland</option><option value="bezig">bezig</option><option value="afgerond">afgerond</option></select><button class="btn-add-taak" onclick="addTaak('${d.id}')">+ Taak</button></div></div></div>`:''}</div>`;
+  }).join('');
+}
+
+// Actions
+window.toggleDoel=(id)=>{const d=doelen.find(x=>x.id===id);if(d){d._open=d._open===false?true:false;renderDoelenList();}};
+
+window.delDoel=async(id)=>{if(!confirm('Weet je zeker dat je dit doel en alle taken wilt verwijderen?'))return;await deleteDoc(doc(db,'doelen',id));};
+
+window.renameDoel=async(id)=>{const d=doelen.find(x=>x.id===id);if(!d)return;const naam=prompt('Nieuwe naam voor dit doel:',d.naam);if(!naam||!naam.trim())return;await updateDoc(doc(db,'doelen',id),{naam:naam.trim()});};
+
+window.addTaak=async(doelId)=>{const inp=document.getElementById('taak-input-'+doelId);const sel=document.getElementById('taak-status-'+doelId);if(!inp||!inp.value.trim())return;const d=doelen.find(x=>x.id===doelId);if(!d)return;const taken=[...d.taken,{tekst:inp.value.trim(),status:sel.value}];await updateDoc(doc(db,'doelen',doelId),{taken});inp.value='';};
+
+window.toggleCheck=async(doelId,idx)=>{const d=doelen.find(x=>x.id===doelId);if(!d)return;const taken=[...d.taken];taken[idx]={...taken[idx],status:taken[idx].status==='afgerond'?'gepland':'afgerond'};await updateDoc(doc(db,'doelen',doelId),{taken});};
+
+window.cycleStatus=async(doelId,idx)=>{const d=doelen.find(x=>x.id===doelId);if(!d)return;const v=['gepland','bezig','afgerond'];const taken=[...d.taken];const h=v.indexOf(taken[idx].status);taken[idx]={...taken[idx],status:v[(h+1)%3]};await updateDoc(doc(db,'doelen',doelId),{taken});};
+
+window.delTaak=async(doelId,idx)=>{const d=doelen.find(x=>x.id===doelId);if(!d)return;const taken=d.taken.filter((_,i)=>i!==idx);await updateDoc(doc(db,'doelen',doelId),{taken});};
+
+window.setTaakDeadline=async(doelId,idx,date)=>{const d=doelen.find(x=>x.id===doelId);if(!d)return;const taken=[...d.taken];taken[idx]={...taken[idx],deadline:date||''};await updateDoc(doc(db,'doelen',doelId),{taken});};
+
+// Modal
+window.openAddDoel=()=>{document.getElementById('modal-naam').value='';document.getElementById('modal').style.display='flex';setTimeout(()=>document.getElementById('modal-naam').focus(),50);};
+window.closeModal=(e)=>{if(e.target.id==='modal')closeModalDirect();};
+window.closeModalDirect=()=>{document.getElementById('modal').style.display='none';};
+window.saveDoel=async()=>{const naam=document.getElementById('modal-naam').value.trim();if(!naam)return;await addDoc(collection(db,'doelen'),{naam,kleur:selectedColor,taken:[],aangemaakt:serverTimestamp()});closeModalDirect();};
+document.getElementById('modal-naam').addEventListener('keydown',e=>{if(e.key==='Enter')window.saveDoel();});
+
+// Tabs
+window.showTab=(tab)=>{['dashboard','doelen','notities','planning'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none');document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(['dashboard','doelen','notities','planning'][i])===tab));};
+
+// Wachtwoord wijzigen
+window.openPwModal=()=>{
+  document.getElementById('pw-current').value='';
+  document.getElementById('pw-new').value='';
+  document.getElementById('pw-confirm').value='';
+  const msg=document.getElementById('pw-msg');msg.className='pw-msg';msg.style.display='none';
+  document.getElementById('pw-modal').style.display='flex';
+  setTimeout(()=>document.getElementById('pw-current').focus(),50);
+};
+window.closePwModal=()=>{document.getElementById('pw-modal').style.display='none';};
+
+window.changePw=async()=>{
+  const current=document.getElementById('pw-current').value;
+  const newPw=document.getElementById('pw-new').value;
+  const confirm=document.getElementById('pw-confirm').value;
+  const msg=document.getElementById('pw-msg');
+  const btn=document.getElementById('pw-save-btn');
+
+  msg.className='pw-msg';msg.style.display='none';
+
+  if(!current||!newPw||!confirm){msg.textContent='Vul alle velden in.';msg.className='pw-msg error';return;}
+  if(newPw.length<6){msg.textContent='Nieuw wachtwoord moet minimaal 6 tekens zijn.';msg.className='pw-msg error';return;}
+  if(newPw!==confirm){msg.textContent='Nieuwe wachtwoorden komen niet overeen.';msg.className='pw-msg error';return;}
+
+  btn.disabled=true;btn.textContent='Opslaan...';
+  try{
+    const user=auth.currentUser;
+    const credential=EmailAuthProvider.credential(user.email,current);
+    await reauthenticateWithCredential(user,credential);
+    await updatePassword(user,newPw);
+    msg.textContent='Wachtwoord succesvol gewijzigd!';msg.className='pw-msg success';
+    setTimeout(()=>closePwModal(),1500);
+  }catch(e){
+    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'){msg.textContent='Huidig wachtwoord is onjuist.';}
+    else{msg.textContent='Er ging iets mis. Probeer het opnieuw.';}
+    msg.className='pw-msg error';
+  }
+  btn.disabled=false;btn.textContent='Opslaan';
+};
+
+// ============ NOTITIES ============
+function renderNotities(){
+  const el=document.getElementById('notities-list');
+  const zoek=document.getElementById('notitie-zoek')?.value.toLowerCase()||'';
+  let items=notities;
+  if(notitieFilter!=='alle')items=items.filter(n=>n.type===notitieFilter);
+  if(zoek)items=items.filter(n=>(n.titel||'').toLowerCase().includes(zoek)||(n.inhoud||'').toLowerCase().includes(zoek));
+  if(!items.length){el.innerHTML='<div class="empty-state">'+(notities.length?'Geen resultaten gevonden.':'Nog geen notities. Klik op "+ Toevoegen".')+'</div>';return;}
+  el.innerHTML=items.map(n=>{
+    const datum=n.aangemaakt?.toDate?.();
+    const d=datum?datum.toLocaleDateString('nl-NL',{day:'numeric',month:'short',year:'numeric'}):'';
+    const open=n._open||false;
+    return`<div class="notitie-card">
+      <div class="notitie-header" onclick="toggleNotitie('${n.id}')">
+        <span class="notitie-type type-${n.type}">${n.type==='besluit'?'Besluit':'Notitie'}</span>
+        <div class="notitie-info">
+          <div class="notitie-title">${n.titel||'Zonder titel'}</div>
+          <div class="notitie-meta">${d}${n.auteur?' — '+n.auteur:''}</div>
+          ${!open&&n.inhoud?`<div class="notitie-preview">${n.inhoud.replace(/<[^>]*>/g,'').substring(0,120)}</div>`:''}
+        </div>
+        <div class="notitie-btns">
+          <button class="notitie-btn" onclick="event.stopPropagation();editNotitie('${n.id}')" title="Bewerken">&#9998;</button>
+          <button class="notitie-btn del" onclick="event.stopPropagation();delNotitie('${n.id}')" title="Verwijderen">&times;</button>
+        </div>
+      </div>
+      ${open?`<div class="notitie-body">${n.inhoud||'<em>Geen inhoud</em>'}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+window.toggleNotitie=(id)=>{const n=notities.find(x=>x.id===id);if(n){n._open=!n._open;renderNotities();}};
+
+window.setFilter=(f)=>{notitieFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().startsWith(f==='alle'?'alle':f)));renderNotities();};
+
+window.openNotitieForm=()=>{
+  editingNotitieId=null;
+  document.getElementById('nf-title').textContent='Nieuwe notitie';
+  document.getElementById('nf-titel').value='';
+  document.getElementById('nf-type').value='notitie';
+  document.getElementById('nf-inhoud').value='';
+  document.getElementById('notitie-form').style.display='block';
+  document.getElementById('nf-titel').focus();
+};
+
+window.editNotitie=(id)=>{
+  const n=notities.find(x=>x.id===id);if(!n)return;
+  editingNotitieId=id;
+  document.getElementById('nf-title').textContent='Notitie bewerken';
+  document.getElementById('nf-titel').value=n.titel||'';
+  document.getElementById('nf-type').value=n.type||'notitie';
+  document.getElementById('nf-inhoud').value=n.inhoud||'';
+  document.getElementById('notitie-form').style.display='block';
+  document.getElementById('nf-titel').focus();
+};
+
+window.closeNotitieForm=()=>{editingNotitieId=null;document.getElementById('notitie-form').style.display='none';};
+
+window.saveNotitie=async()=>{
+  const titel=document.getElementById('nf-titel').value.trim();
+  const type=document.getElementById('nf-type').value;
+  const inhoud=document.getElementById('nf-inhoud').value.trim();
+  if(!titel){alert('Vul een titel in.');return;}
+  const user=auth.currentUser;
+  const data={titel,type,inhoud,auteur:user?.email||'',bijgewerkt:serverTimestamp()};
+  if(editingNotitieId){
+    await updateDoc(doc(db,'notities',editingNotitieId),data);
+  }else{
+    data.aangemaakt=serverTimestamp();
+    await addDoc(collection(db,'notities'),data);
+  }
+  closeNotitieForm();
+};
+
+window.delNotitie=async(id)=>{if(!confirm('Deze notitie verwijderen?'))return;await deleteDoc(doc(db,'notities',id));};
+
+// ============ PLANNING ============
+function getMergedPlanItems(){
+  const items=[];
+  // Standalone planning items
+  planItems.forEach(p=>{items.push({...p,source:'planning',color:p.doelId?doelen.find(x=>x.id===p.doelId)?.kleur||'var(--border)':'var(--border)'});});
+  // Tasks with deadlines from doelen
+  doelen.forEach(d=>{d.taken.forEach((t,i)=>{if(t.deadline){
+    // Skip if already linked as standalone item
+    const exists=planItems.find(p=>p.doelId===d.id&&p.taakIdx===i);
+    if(!exists)items.push({id:`taak-${d.id}-${i}`,titel:t.tekst,deadline:t.deadline,status:t.status,doelId:d.id,taakIdx:i,source:'taak',color:d.kleur,doelNaam:d.naam});
+  }});});
+  items.sort((a,b)=>{if(!a.deadline)return 1;if(!b.deadline)return-1;return a.deadline.localeCompare(b.deadline);});
+  return items;
+}
+
+function renderPlanning(){renderTimeline();renderPlanList();}
+
+window.setPlanView=(v)=>{
+  planView=v;
+  document.getElementById('plan-timeline-view').style.display=v==='timeline'?'block':'none';
+  document.getElementById('plan-list-view').style.display=v==='list'?'block':'none';
+  document.getElementById('vbtn-timeline').classList.toggle('active',v==='timeline');
+  document.getElementById('vbtn-list').classList.toggle('active',v==='list');
+};
+
+function getItemStatus(item){
+  if(item.status==='afgerond')return'afgerond';
+  if(item.status==='bezig')return'bezig';
+  if(item.deadline){const dl=new Date(item.deadline);const now=new Date();now.setHours(0,0,0,0);if(dl<now)return'overdue';}
+  return'gepland';
+}
+
+function formatDate(d){if(!d)return'';const dt=new Date(d);return dt.toLocaleDateString('nl-NL',{day:'numeric',month:'short'});}
+
+function renderTimeline(){
+  const el=document.getElementById('timeline-track');
+  const items=getMergedPlanItems().filter(p=>p.deadline);
+  if(!items.length){el.innerHTML='<div class="empty-state" style="padding:2rem">Nog geen items met deadline. Stel een deadline in bij een taak of voeg een planning-item toe.</div>';return;}
+  const dates=items.map(p=>new Date(p.deadline).getTime());
+  const now=Date.now();
+  let minD=Math.min(...dates,now);let maxD=Math.max(...dates,now);
+  const pad=(maxD-minD)*0.08||86400000*30;
+  minD-=pad;maxD+=pad;const range=maxD-minD||1;
+  const months=[];const startDate=new Date(minD);startDate.setDate(1);const endDate=new Date(maxD);
+  let cur=new Date(startDate);while(cur<=endDate){months.push(new Date(cur));cur.setMonth(cur.getMonth()+1);}
+  let html='<div class="tl-line"></div><div class="tl-months">';
+  months.forEach(m=>{html+=`<span class="tl-month">${m.toLocaleDateString('nl-NL',{month:'short'})}</span>`;});
+  html+='</div>';
+  const nowPct=((now-minD)/range)*100;
+  html+=`<div style="position:absolute;top:48px;left:${nowPct}%;width:2px;height:24px;background:var(--gold);border-radius:1px;z-index:2"></div>`;
+  html+=`<div style="position:absolute;top:75px;left:${nowPct}%;transform:translateX(-50%);font-size:10px;color:var(--gold);font-weight:600">vandaag</div>`;
+  items.forEach((p,i)=>{
+    const t=new Date(p.deadline).getTime();const pct=((t-minD)/range)*100;
+    const st=getItemStatus(p);const top=i%2===0?10:90;const labelPos=i%2===0?'top:-20px':'top:24px';
+    const dotColor=st==='afgerond'?'var(--green)':st==='overdue'?'var(--red)':st==='bezig'?'var(--gold)':p.color||'var(--border)';
+    const clickAction=p.source==='taak'?'':`onclick="editPlanItem('${p.id}')"`;
+    html+=`<div class="tl-item" style="left:${pct}%;top:${top}px;transform:translateX(-50%)" ${clickAction}>
+      <div class="tl-dot" style="background:${dotColor}"></div>
+      <div class="tl-label" style="${labelPos}">${p.titel||''}</div>
+      <div class="tl-date" style="${i%2===0?'top:-32px':'top:40px'};position:absolute;left:50%;transform:translateX(-50%)">${formatDate(p.deadline)}</div>
+    </div>`;
+  });
+  el.innerHTML=html;
+}
+
+function renderPlanList(){
+  const el=document.getElementById('plan-list');
+  const items=getMergedPlanItems();
+  if(!items.length){el.innerHTML='<div class="empty-state">Nog geen planning-items. Stel een deadline in bij een taak of voeg een item toe.</div>';return;}
+  el.innerHTML=items.map(p=>{
+    const st=getItemStatus(p);
+    const dn=p.doelNaam||doelen.find(x=>x.id===p.doelId)?.naam||'';
+    const statusLabel=st==='overdue'?'te laat':st;
+    const pillBg=st==='afgerond'?'background:#EAF3EE;color:#00513A;border:1.5px solid #B5D4C4':st==='bezig'?'background:#FEF6E0;color:#9A6E10;border:1.5px solid var(--gold-soft)':st==='overdue'?'background:var(--red-light);color:var(--red);border:1.5px solid #F5C6C0':'background:var(--paper);color:var(--green);border:1.5px solid var(--border)';
+    const colorDot=p.color&&p.color!=='var(--border)'?`<span style="width:8px;height:8px;border-radius:50%;background:${p.color};flex-shrink:0"></span>`:'';
+    const isTaak=p.source==='taak';
+    const statusClick=isTaak?`onclick="cycleStatus('${p.doelId}',${p.taakIdx})"`:`onclick="cyclePlanStatus('${p.id}')"`;
+    return`<div class="plan-row">
+      <span class="plan-date ${st==='overdue'?'overdue':''}">${formatDate(p.deadline)||'—'}</span>
+      ${colorDot}
+      <div class="plan-info">
+        <div class="plan-title ${st==='afgerond'?'done':''}">${p.titel||'Zonder titel'}</div>
+        ${dn?`<div class="plan-doel">${dn}${isTaak?' (taak)':''}</div>`:''}
+      </div>
+      <button class="plan-status" style="${pillBg}" ${statusClick}>${statusLabel}</button>
+      ${!isTaak?`<div class="plan-btns">
+        <button class="plan-btn" onclick="editPlanItem('${p.id}')" title="Bewerken">&#9998;</button>
+        <button class="plan-btn del" onclick="delPlanItem('${p.id}')" title="Verwijderen">&times;</button>
+      </div>`:`<div class="plan-btns"><span style="font-size:11px;color:var(--text-muted);padding:3px 5px" title="Beheer via Doelen & Taken">&#128279;</span></div>`}
+    </div>`;
+  }).join('');
+}
+
+function fillDoelSelect(){
+  const sel=document.getElementById('pf-doel');
+  sel.innerHTML='<option value="">Geen doel gekoppeld</option>';
+  doelen.forEach(d=>{const o=document.createElement('option');o.value=d.id;o.textContent=d.naam;sel.appendChild(o);});
+}
+
+window.openPlanForm=()=>{
+  editingPlanId=null;
+  document.getElementById('pf-title').textContent='Nieuw planning-item';
+  document.getElementById('pf-titel').value='';
+  document.getElementById('pf-deadline').value='';
+  document.getElementById('pf-status').value='gepland';
+  fillDoelSelect();
+  document.getElementById('pf-doel').value='';
+  document.getElementById('plan-form').style.display='block';
+  document.getElementById('pf-titel').focus();
+};
+
+window.editPlanItem=(id)=>{
+  const p=planItems.find(x=>x.id===id);if(!p)return;
+  editingPlanId=id;
+  document.getElementById('pf-title').textContent='Item bewerken';
+  document.getElementById('pf-titel').value=p.titel||'';
+  document.getElementById('pf-deadline').value=p.deadline||'';
+  document.getElementById('pf-status').value=p.status||'gepland';
+  fillDoelSelect();
+  document.getElementById('pf-doel').value=p.doelId||'';
+  document.getElementById('plan-form').style.display='block';
+  document.getElementById('pf-titel').focus();
+};
+
+window.closePlanForm=()=>{editingPlanId=null;document.getElementById('plan-form').style.display='none';};
+
+window.savePlanItem=async()=>{
+  const titel=document.getElementById('pf-titel').value.trim();
+  const deadline=document.getElementById('pf-deadline').value;
+  const status=document.getElementById('pf-status').value;
+  const doelId=document.getElementById('pf-doel').value;
+  if(!titel){alert('Vul een titel in.');return;}
+  const data={titel,deadline,status,doelId,bijgewerkt:serverTimestamp()};
+  if(editingPlanId){
+    await updateDoc(doc(db,'planning',editingPlanId),data);
+  }else{
+    data.aangemaakt=serverTimestamp();
+    await addDoc(collection(db,'planning'),data);
+  }
+  closePlanForm();
+};
+
+window.cyclePlanStatus=async(id)=>{
+  const p=planItems.find(x=>x.id===id);if(!p)return;
+  const v=['gepland','bezig','afgerond'];
+  const h=v.indexOf(p.status);
+  await updateDoc(doc(db,'planning',id),{status:v[(h+1)%3]});
+};
+
+window.delPlanItem=async(id)=>{if(!confirm('Dit item verwijderen?'))return;await deleteDoc(doc(db,'planning',id));};
+</script>
+</body>
+</html>
