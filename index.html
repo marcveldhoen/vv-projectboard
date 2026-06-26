@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>VV Projectboard</title>
- <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -155,6 +155,43 @@
   .empty-state{text-align:center;padding:3rem 1rem;color:var(--text-muted);font-size:14px}
   .loading{text-align:center;padding:3rem;color:var(--text-muted);font-size:14px}
 
+  /* NOTITIES */
+  .notities-toolbar{display:flex;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center}
+  .notities-toolbar input{flex:1;min-width:180px;padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--white);color:var(--ink)}
+  .notities-toolbar input:focus{outline:none;border-color:var(--green)}
+  .filter-btns{display:flex;gap:4px}
+  .filter-btn{padding:6px 14px;font-size:12px;font-weight:600;border:1.5px solid var(--border);border-radius:20px;background:var(--white);color:var(--text-muted);cursor:pointer;font-family:'Poppins',sans-serif;transition:all .15s}
+  .filter-btn.active{background:var(--green);color:var(--white);border-color:var(--green)}
+  .filter-btn:hover:not(.active){background:var(--paper);color:var(--ink)}
+  .notitie-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:.75rem;box-shadow:var(--shadow);overflow:hidden;transition:background .1s}
+  .notitie-card:hover{background:var(--paper)}
+  .notitie-header{display:flex;align-items:flex-start;gap:12px;padding:1.1rem 1.4rem;cursor:pointer}
+  .notitie-type{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:2px;font-family:'Poppins',sans-serif}
+  .type-notitie{background:var(--paper);color:var(--green);border:1.5px solid var(--border)}
+  .type-besluit{background:#FEF6E0;color:#9A6E10;border:1.5px solid var(--gold-soft)}
+  .notitie-info{flex:1;min-width:0}
+  .notitie-title{font-size:15px;font-weight:600;color:var(--ink);font-family:'Poppins',sans-serif}
+  .notitie-meta{font-size:12px;color:var(--text-muted);margin-top:3px}
+  .notitie-preview{font-size:13px;color:var(--text-muted);margin-top:6px;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .notitie-btns{display:flex;gap:4px;flex-shrink:0}
+  .notitie-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:3px 5px;border-radius:6px;opacity:0;transition:all .15s;line-height:1}
+  .notitie-card:hover .notitie-btn{opacity:1}
+  .notitie-btn:hover{background:var(--white);color:var(--ink)}
+  .notitie-btn.del:hover{color:var(--red)}
+  .notitie-body{padding:0 1.4rem 1.1rem;font-size:14px;line-height:1.7;color:var(--ink);border-top:1px solid var(--border);padding-top:1rem;margin-top:0}
+  .notitie-body p{margin-bottom:.5rem}
+  .notitie-form{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.4rem;margin-bottom:1rem}
+  .notitie-form h3{font-size:16px;font-weight:700;color:var(--green);font-family:'Poppins',sans-serif;margin-bottom:.4rem}
+  .notitie-form .modal-gold{width:28px;height:2px;background:var(--gold);border-radius:2px;margin-bottom:1rem}
+  .nf-row{display:flex;gap:10px;margin-bottom:.75rem;flex-wrap:wrap}
+  .nf-row input{flex:1;min-width:180px;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--ink);font-family:'Poppins',sans-serif;font-weight:500}
+  .nf-row input:focus{outline:none;border-color:var(--green)}
+  .nf-row select{padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--white);color:var(--ink)}
+  .nf-row select:focus{outline:none;border-color:var(--green)}
+  .nf-textarea{width:100%;min-height:120px;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--ink);font-family:'Inter',sans-serif;line-height:1.6;resize:vertical;margin-bottom:.75rem}
+  .nf-textarea:focus{outline:none;border-color:var(--green)}
+  .nf-footer{display:flex;gap:8px;justify-content:flex-end}
+
   /* TABLET */
   @media(max-width:768px){
     .stats-grid{grid-template-columns:repeat(2,1fr)}
@@ -201,6 +238,10 @@
     .section-header h2{font-size:14px}
     .btn-add-doel{font-size:12px;padding:7px 12px}
     .dash-intro h2{font-size:17px}
+    .notitie-header{padding:.85rem 1rem;gap:8px}
+    .notitie-title{font-size:14px}
+    .notitie-body{padding:0 1rem 1rem}
+    .nf-row{flex-direction:column}
   }
 </style>
 </head>
@@ -248,6 +289,7 @@
   <div class="tabs">
     <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
     <button class="tab" onclick="showTab('doelen')">Doelen & Taken</button>
+    <button class="tab" onclick="showTab('notities')">Notities & Besluiten</button>
   </div>
 
   <!-- MAIN CONTENT -->
@@ -274,6 +316,44 @@
         <button class="btn-add-doel" onclick="openAddDoel()">+ Doel toevoegen</button>
       </div>
       <div id="doelen-list"><div class="loading">Laden...</div></div>
+    </div>
+
+    <!-- NOTITIES TAB -->
+    <div id="tab-notities" style="display:none">
+      <!-- ADD/EDIT FORM -->
+      <div class="notitie-form" id="notitie-form" style="display:none">
+        <h3 id="nf-title">Nieuwe notitie</h3>
+        <div class="modal-gold"></div>
+        <div class="nf-row">
+          <input type="text" id="nf-titel" placeholder="Titel (bijv. 'Besluit KvK-inschrijving')" />
+          <select id="nf-type">
+            <option value="notitie">Notitie</option>
+            <option value="besluit">Besluit</option>
+          </select>
+        </div>
+        <textarea class="nf-textarea" id="nf-inhoud" placeholder="Schrijf hier de inhoud..."></textarea>
+        <div class="nf-footer">
+          <button class="btn-cancel" onclick="closeNotitieForm()">Annuleren</button>
+          <button class="btn-save" onclick="saveNotitie()">Opslaan</button>
+        </div>
+      </div>
+
+      <!-- TOOLBAR -->
+      <div class="section-header">
+        <h2>Notities & Besluiten</h2>
+        <button class="btn-add-doel" onclick="openNotitieForm()">+ Toevoegen</button>
+      </div>
+      <div class="notities-toolbar">
+        <input type="text" id="notitie-zoek" placeholder="Zoeken in notities..." oninput="renderNotities()" />
+        <div class="filter-btns">
+          <button class="filter-btn active" onclick="setFilter('alle')">Alle</button>
+          <button class="filter-btn" onclick="setFilter('notitie')">Notities</button>
+          <button class="filter-btn" onclick="setFilter('besluit')">Besluiten</button>
+        </div>
+      </div>
+
+      <!-- LIST -->
+      <div id="notities-list"></div>
     </div>
   </div>
 
@@ -331,7 +411,11 @@ const db = getFirestore(app);
 const COLORS = ['#00513A','#C9A227','#1A6B4A','#8B5E0A','#2E5D4B','#A67C52','#4A7C6F','#6B4226'];
 let selectedColor = COLORS[0];
 let doelen = [];
+let notities = [];
 let unsubDoelen = null;
+let unsubNotities = null;
+let notitieFilter = 'alle';
+let editingNotitieId = null;
 
 // Color picker
 const cp = document.getElementById('color-picker');
@@ -384,6 +468,7 @@ onAuthStateChanged(auth, user => {
     document.getElementById('login-btn').disabled = false;
     document.getElementById('login-btn').textContent = 'Inloggen';
     if(unsubDoelen) { unsubDoelen(); unsubDoelen = null; }
+    if(unsubNotities) { unsubNotities(); unsubNotities = null; }
   }
 });
 
@@ -393,6 +478,11 @@ function startListening() {
   unsubDoelen = onSnapshot(q, snap => {
     doelen = snap.docs.map(d => ({ id: d.id, ...d.data(), taken: d.data().taken || [] }));
     render();
+  });
+  const qn = query(collection(db, 'notities'), orderBy('aangemaakt','desc'));
+  unsubNotities = onSnapshot(qn, snap => {
+    notities = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderNotities();
   });
 }
 
@@ -456,7 +546,7 @@ window.saveDoel=async()=>{const naam=document.getElementById('modal-naam').value
 document.getElementById('modal-naam').addEventListener('keydown',e=>{if(e.key==='Enter')window.saveDoel();});
 
 // Tabs
-window.showTab=(tab)=>{document.getElementById('tab-dashboard').style.display=tab==='dashboard'?'block':'none';document.getElementById('tab-doelen').style.display=tab==='doelen'?'block':'none';document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='dashboard')||(i===1&&tab==='doelen')));};
+window.showTab=(tab)=>{['dashboard','doelen','notities'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none');document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(['dashboard','doelen','notities'][i])===tab));};
 
 // Wachtwoord wijzigen
 window.openPwModal=()=>{
@@ -497,6 +587,81 @@ window.changePw=async()=>{
   }
   btn.disabled=false;btn.textContent='Opslaan';
 };
+
+// ============ NOTITIES ============
+function renderNotities(){
+  const el=document.getElementById('notities-list');
+  const zoek=document.getElementById('notitie-zoek')?.value.toLowerCase()||'';
+  let items=notities;
+  if(notitieFilter!=='alle')items=items.filter(n=>n.type===notitieFilter);
+  if(zoek)items=items.filter(n=>(n.titel||'').toLowerCase().includes(zoek)||(n.inhoud||'').toLowerCase().includes(zoek));
+  if(!items.length){el.innerHTML='<div class="empty-state">'+(notities.length?'Geen resultaten gevonden.':'Nog geen notities. Klik op "+ Toevoegen".')+'</div>';return;}
+  el.innerHTML=items.map(n=>{
+    const datum=n.aangemaakt?.toDate?.();
+    const d=datum?datum.toLocaleDateString('nl-NL',{day:'numeric',month:'short',year:'numeric'}):'';
+    const open=n._open||false;
+    return`<div class="notitie-card">
+      <div class="notitie-header" onclick="toggleNotitie('${n.id}')">
+        <span class="notitie-type type-${n.type}">${n.type==='besluit'?'Besluit':'Notitie'}</span>
+        <div class="notitie-info">
+          <div class="notitie-title">${n.titel||'Zonder titel'}</div>
+          <div class="notitie-meta">${d}${n.auteur?' — '+n.auteur:''}</div>
+          ${!open&&n.inhoud?`<div class="notitie-preview">${n.inhoud.replace(/<[^>]*>/g,'').substring(0,120)}</div>`:''}
+        </div>
+        <div class="notitie-btns">
+          <button class="notitie-btn" onclick="event.stopPropagation();editNotitie('${n.id}')" title="Bewerken">&#9998;</button>
+          <button class="notitie-btn del" onclick="event.stopPropagation();delNotitie('${n.id}')" title="Verwijderen">&times;</button>
+        </div>
+      </div>
+      ${open?`<div class="notitie-body">${n.inhoud||'<em>Geen inhoud</em>'}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+window.toggleNotitie=(id)=>{const n=notities.find(x=>x.id===id);if(n){n._open=!n._open;renderNotities();}};
+
+window.setFilter=(f)=>{notitieFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().startsWith(f==='alle'?'alle':f)));renderNotities();};
+
+window.openNotitieForm=()=>{
+  editingNotitieId=null;
+  document.getElementById('nf-title').textContent='Nieuwe notitie';
+  document.getElementById('nf-titel').value='';
+  document.getElementById('nf-type').value='notitie';
+  document.getElementById('nf-inhoud').value='';
+  document.getElementById('notitie-form').style.display='block';
+  document.getElementById('nf-titel').focus();
+};
+
+window.editNotitie=(id)=>{
+  const n=notities.find(x=>x.id===id);if(!n)return;
+  editingNotitieId=id;
+  document.getElementById('nf-title').textContent='Notitie bewerken';
+  document.getElementById('nf-titel').value=n.titel||'';
+  document.getElementById('nf-type').value=n.type||'notitie';
+  document.getElementById('nf-inhoud').value=n.inhoud||'';
+  document.getElementById('notitie-form').style.display='block';
+  document.getElementById('nf-titel').focus();
+};
+
+window.closeNotitieForm=()=>{editingNotitieId=null;document.getElementById('notitie-form').style.display='none';};
+
+window.saveNotitie=async()=>{
+  const titel=document.getElementById('nf-titel').value.trim();
+  const type=document.getElementById('nf-type').value;
+  const inhoud=document.getElementById('nf-inhoud').value.trim();
+  if(!titel){alert('Vul een titel in.');return;}
+  const user=auth.currentUser;
+  const data={titel,type,inhoud,auteur:user?.email||'',bijgewerkt:serverTimestamp()};
+  if(editingNotitieId){
+    await updateDoc(doc(db,'notities',editingNotitieId),data);
+  }else{
+    data.aangemaakt=serverTimestamp();
+    await addDoc(collection(db,'notities'),data);
+  }
+  closeNotitieForm();
+};
+
+window.delNotitie=async(id)=>{if(!confirm('Deze notitie verwijderen?'))return;await deleteDoc(doc(db,'notities',id));};
 </script>
 </body>
 </html>
