@@ -1423,6 +1423,82 @@
     .taak-deadline.overdue {
         color: var(--red);
         border-color: var(--red)
+    }/* STARTPAGINA MET TEGELS */
+
+    .start-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px
+    }
+
+    .start-tile {
+        background: var(--white);
+        border: 1.5px solid var(--border);
+        border-top: 3px solid var(--gold);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem 1.6rem;
+        cursor: pointer;
+        text-align: left;
+        font-family: 'Poppins', sans-serif;
+        transition: box-shadow .15s, transform .15s, border-color .15s;
+        display: flex;
+        flex-direction: column;
+        gap: 6px
+    }
+
+    .start-tile:hover {
+        background: var(--green);
+        border-color: var(--green);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px)
+    }
+
+    .start-tile:hover .st-naam {
+        color: var(--gold-soft)
+    }
+
+    .start-tile:hover .st-cijfer {
+        color: var(--white)
+    }
+
+    .start-tile:hover .st-uitleg {
+        color: rgba(255, 255, 255, 0.8)
+    }
+
+    .start-tile:focus-visible {
+        outline: 3px solid var(--gold);
+        outline-offset: 2px
+    }
+
+    .start-tile .st-naam {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--green)
+    }
+
+    .start-tile .st-cijfer {
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1.1
+    }
+
+    .start-tile .st-uitleg {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        font-family: 'Inter', sans-serif;
+        line-height: 1.5
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .start-tile {
+            transition: none
+        }
+
+        .start-tile:hover {
+            transform: none
+        }
     }/* TABLET */
 
     @media (max-width: 768px) {
@@ -1470,6 +1546,15 @@
         .stats-grid {
             grid-template-columns: repeat(2, 1fr);
             gap: 8px
+        }
+
+        .start-grid {
+            grid-template-columns: 1fr;
+            gap: 10px
+        }
+
+        .start-tile {
+            padding: 1.1rem 1.2rem
         }
 
         .stat-card {
@@ -1694,7 +1779,8 @@
 
         <!-- TABS -->
         <div class="tabs">
-            <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="tab active" onclick="showTab('start')">Start</button>
+            <button class="tab" onclick="showTab('dashboard')">Dashboard</button>
             <button class="tab" onclick="showTab('doelen')">Doelen &amp; Taken</button>
             <button class="tab" onclick="showTab('notities')">Notities &amp; Besluiten</button>
             <button class="tab" onclick="showTab('planning')">Planning</button>
@@ -1702,8 +1788,18 @@
 
         <!-- MAIN CONTENT -->
         <div class="main">
+            <!-- START TAB -->
+            <div id="tab-start">
+                <div class="dash-intro">
+                    <h2>Waar wil je heen?</h2>
+                    <div class="gold-line"></div>
+                    <p>Kies een onderdeel van het projectboard.</p>
+                </div>
+                <div class="start-grid" id="start-grid"></div>
+            </div>
+
             <!-- DASHBOARD TAB -->
-            <div id="tab-dashboard">
+            <div id="tab-dashboard" style="display:none">
                 <div class="dash-intro">
                     <h2>Voortgang opstarttraject</h2>
                     <div class="gold-line"></div>
@@ -1982,6 +2078,7 @@
             document.getElementById('app-screen').style.display = 'block';
             document.getElementById('user-email').textContent = user.email;
             verbergDbFout();
+            window.showTab('start');
             startListening();
         } else {
             document.getElementById('auth-screen').style.display = 'flex';
@@ -2053,7 +2150,54 @@
         });
     }
 
+    // Tekent de vier tegels op de startpagina, met per tegel een cijfer
+    // dat uit de al ingelezen gegevens komt.
+    function renderStartTiles() {
+        const el = document.getElementById('start-grid');
+        if (!el)
+            return;
+        const s = calcStats();
+        const pct = s.totalTaken ? Math.round(s.afgerond / s.totalTaken * 100) : 0;
+        const open = s.gepland + s.bezig;
+        const teLaat = getMergedPlanItems().filter(p => getItemStatus(p) === 'overdue').length;
+        const metDeadline = getMergedPlanItems().filter(p => p.deadline).length;
+
+        const tegels = [
+            {
+                tab: 'dashboard',
+                naam: 'Dashboard',
+                cijfer: pct + '%',
+                uitleg: 'Totale voortgang van het opstarttraject.'
+            },
+            {
+                tab: 'doelen',
+                naam: 'Doelen &amp; Taken',
+                cijfer: open,
+                uitleg: open === 1 ? '1 taak staat nog open.' : open + ' taken staan nog open.'
+            },
+            {
+                tab: 'notities',
+                naam: 'Notities &amp; Besluiten',
+                cijfer: notities.length,
+                uitleg: notities.length === 1 ? '1 vastgelegd item.' : notities.length + ' vastgelegde items.'
+            },
+            {
+                tab: 'planning',
+                naam: 'Planning',
+                cijfer: metDeadline,
+                uitleg: teLaat ? (teLaat === 1 ? '1 deadline is verstreken.' : teLaat + ' deadlines zijn verstreken.') : 'Geen verstreken deadlines.'
+            }
+        ];
+
+        el.innerHTML = tegels.map(t => `<button class="start-tile" onclick="showTab('${t.tab}')">
+      <span class="st-naam">${t.naam}</span>
+      <span class="st-cijfer">${esc(t.cijfer)}</span>
+      <span class="st-uitleg">${esc(t.uitleg)}</span>
+    </button>`).join('');
+    }
+
     function render() {
+        renderStartTiles();
         renderStats();
         renderDashboardDoelen();
         renderDoelenList();
@@ -2258,9 +2402,11 @@
     });
 
     // Tabs
+    const TABS = ['start', 'dashboard', 'doelen', 'notities', 'planning'];
+
     window.showTab = (tab) => {
-        ['dashboard', 'doelen', 'notities', 'planning'].forEach(t => document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none');
-        document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', (['dashboard', 'doelen', 'notities', 'planning'][i]) === tab));
+        TABS.forEach(t => document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none');
+        document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', TABS[i] === tab));
     };
 
     // Wachtwoord wijzigen
@@ -2336,6 +2482,7 @@
 
     // ============ NOTITIES ============
     function renderNotities() {
+        renderStartTiles();
         const el = document.getElementById('notities-list');
         const zoek = document.getElementById('notitie-zoek')?.value.toLowerCase() || '';
         let items = notities;
@@ -2492,6 +2639,7 @@
     }
 
     function renderPlanning() {
+        renderStartTiles();
         renderTimeline();
         renderPlanList();
     }
