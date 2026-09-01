@@ -26,7 +26,8 @@
         font-family: 'Inter', system-ui, sans-serif;
         background: var(--paper);
         color: var(--ink);
-        min-height: 100vh
+        min-height: 100vh;
+        overflow-x: hidden
     }
 
     h1, h2, h3, .tab, .btn-primary, .btn-add-doel, .btn-add-taak, .btn-save {
@@ -283,6 +284,7 @@
 
     .tabs {
         display: flex;
+        flex-wrap: wrap;
         border-bottom: 1.5px solid var(--border);
         background: var(--white);
         padding: 0 2rem
@@ -475,6 +477,7 @@
 
     .doel-header {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 12px;
         padding: 1rem 1.4rem;
@@ -497,12 +500,14 @@
         font-size: 15px;
         font-weight: 600;
         flex: 1;
+        min-width: 120px;
         font-family: 'Poppins', sans-serif;
         color: var(--ink)
     }
 
     .doel-prog-wrap {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 8px
     }
@@ -580,6 +585,7 @@
 
     .taak-row {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 10px;
         padding: .7rem 1.4rem;
@@ -623,6 +629,7 @@
 
     .taak-text {
         flex: 1;
+        min-width: 120px;
         font-size: 14px;
         color: var(--ink)
     }
@@ -964,6 +971,7 @@
 
     .notitie-header {
         display: flex;
+        flex-wrap: wrap;
         align-items: flex-start;
         gap: 12px;
         padding: 1.1rem 1.4rem;
@@ -995,7 +1003,7 @@
 
     .notitie-info {
         flex: 1;
-        min-width: 0
+        min-width: 120px
     }
 
     .notitie-title {
@@ -1062,7 +1070,8 @@
         border-top: 1px solid var(--border);
         padding-top: 1rem;
         margin-top: 0;
-        white-space: pre-wrap
+        white-space: pre-wrap;
+        overflow-wrap: break-word
     }
 
     .notitie-body p {
@@ -1070,7 +1079,8 @@
     }
 
     .hoofdstuk-tekstblok {
-        margin-bottom: 1rem
+        margin-bottom: 1rem;
+        overflow-wrap: break-word
     }
 
     .hoofdstuk-tekstblok:last-child {
@@ -1309,6 +1319,7 @@
 
     .plan-row {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 10px;
         padding: .75rem 1.4rem;
@@ -1339,7 +1350,7 @@
 
     .plan-info {
         flex: 1;
-        min-width: 0
+        min-width: 120px
     }
 
     .plan-title {
