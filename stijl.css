@@ -1790,3 +1790,48 @@
             -webkit-overflow-scrolling: touch
         }
     }
+/* INLOGGEN MET GOOGLE */
+
+    .auth-scheiding {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 1.1rem 0;
+        font-size: 12px;
+        color: var(--text-muted);
+        font-family: 'Inter', sans-serif
+    }
+
+    .auth-scheiding::before, .auth-scheiding::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border)
+    }
+
+    .btn-google {
+        width: 100%;
+        padding: 12px;
+        background: var(--white);
+        color: var(--ink);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all .15s;
+        letter-spacing: .02em;
+        font-family: 'Poppins', sans-serif
+    }
+
+    .btn-google:hover {
+        background: var(--paper);
+        border-color: var(--green)
+    }
+
+    .btn-google:disabled {
+        color: var(--text-muted);
+        border-color: var(--border);
+        background: var(--paper);
+        cursor: not-allowed
+    }

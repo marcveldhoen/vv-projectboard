@@ -28,6 +28,8 @@
                 <input type="password" id="password" placeholder="••••••••"/>
             </div>
             <button class="btn-primary" id="login-btn" onclick="doLogin()">Inloggen</button>
+            <div class="auth-scheiding"><span>of</span></div>
+            <button class="btn-google" id="google-btn" onclick="doGoogleLogin()">Inloggen met Google</button>
         </div>
     </div>
 
@@ -265,7 +267,7 @@
     <!-- ==================== FIREBASE ==================== -->
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, reauthenticateWithCredential, EmailAuthProvider, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -383,6 +385,35 @@
             btn.disabled = false;
             btn.textContent = 'Inloggen';
         }
+    };
+
+    // Opent het inlogvenster van Google. Firebase controleert daarna wie je bent.
+    // Wie bij de gegevens mag, blijft bepaald door de toegangsregels in Firestore.
+    window.doGoogleLogin = async () => {
+        const btn = document.getElementById('google-btn');
+        const err = document.getElementById('auth-error');
+        err.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Inloggen...';
+        try {
+            await signInWithPopup(auth, new GoogleAuthProvider());
+        } catch (e) {
+            console.error(e);
+            if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') {
+                err.textContent = 'Het Google-venster is gesloten voordat het inloggen klaar was.';
+            } else if (e.code === 'auth/popup-blocked') {
+                err.textContent = 'De browser blokkeerde het Google-venster. Sta pop-ups toe voor deze site en probeer het opnieuw.';
+            } else if (e.code === 'auth/unauthorized-domain') {
+                err.textContent = 'Inloggen met Google werkt hier niet. Gebruik beheer.vakverbind.nl.';
+            } else if (e.code === 'auth/network-request-failed') {
+                err.textContent = 'Geen internetverbinding. Controleer je verbinding en probeer het opnieuw.';
+            } else {
+                err.textContent = 'Inloggen met Google is niet gelukt. Probeer het opnieuw.';
+            }
+            err.style.display = 'block';
+        }
+        btn.disabled = false;
+        btn.textContent = 'Inloggen met Google';
     };
 
     window.doLogout = () => signOut(auth);
