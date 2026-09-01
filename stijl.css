@@ -795,6 +795,33 @@
         border-color: var(--green)
     }
 
+    .modal select {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        color: var(--ink);
+        margin-bottom: 1rem;
+        font-family: 'Inter', sans-serif;
+        background: var(--white)
+    }
+
+    .modal select:focus {
+        outline: none;
+        border-color: var(--green)
+    }
+
+    .acties-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        margin-bottom: .5rem;
+        font-family: 'Poppins', sans-serif
+    }
+
     .color-picker {
         display: flex;
         gap: 8px;

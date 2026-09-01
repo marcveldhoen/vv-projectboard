@@ -247,6 +247,21 @@
         </div>
     </div>
 
+    <!-- ==================== ACTIE KOPPELEN MODAL ==================== -->
+    <div class="modal-overlay" id="link-modal" style="display:none" onclick="if(event.target.id==='link-modal')closeLinkModal()">
+        <div class="modal">
+            <h3>Actie koppelen</h3>
+            <div class="modal-gold"></div>
+            <select id="link-doel" onchange="fillLinkTaakSelect()"></select>
+            <select id="link-taak" onchange="toggleLinkNieuweTaak()"></select>
+            <input type="text" id="link-nieuwe-taak" placeholder="Omschrijving van de nieuwe taak..." style="display:none"/>
+            <div class="modal-btns">
+                <button class="btn-cancel" onclick="closeLinkModal()">Annuleren</button>
+                <button class="btn-save" onclick="saveLink()">Koppelen</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== FIREBASE ==================== -->
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -281,6 +296,7 @@
     let hoofdstukken = [];
     let unsubPlaybook = null;
     let editingHoofdstukId = null;
+    let linkHoofdstukId = null;
 
     // ============ HULPFUNCTIES ============
 
@@ -528,6 +544,7 @@
         renderDashboardDoelen();
         renderDoelenList();
         renderPlanning();
+        renderPlaybookList();
     }
 
     function calcStats() {
@@ -1173,6 +1190,25 @@
     };
 
     // ============ PLAYBOOK ============
+    function renderGekoppeldeActies(h) {
+        const links = h.gekoppeldeTaken || [];
+        let rijen = '';
+        links.forEach((link, i) => {
+            const d = doelen.find(x => x.id === link.doelId);
+            const t = d?.taken?.[link.taakIdx];
+            if (!d || !t) {
+                rijen += `<div class="taak-row"><span class="taak-text" style="color:var(--text-muted)"><em>Gekoppelde taak bestaat niet meer</em></span><button class="taak-del" onclick="unlinkActie('${h.id}',${i})" title="Ontkoppelen">&times;</button></div>`;
+            } else {
+                rijen += `<div class="taak-row"><span class="taak-text ${t.status === 'afgerond' ? 'done' : ''}">${esc(t.tekst)} <span style="color:var(--text-muted);font-size:11px">(${esc(d.naam)})</span></span><button class="status-pill s-${esc(t.status)}" onclick="cycleStatus('${link.doelId}',${link.taakIdx})">${esc(t.status)}</button><button class="taak-del" onclick="unlinkActie('${h.id}',${i})" title="Ontkoppelen">&times;</button></div>`;
+            }
+        });
+        return `<div class="add-taak-wrap">
+      <div class="acties-label">Gekoppelde acties</div>
+      ${rijen || '<div style="font-size:13px;color:var(--text-muted);margin-bottom:.6rem">Nog geen acties gekoppeld.</div>'}
+      <button class="btn-add-taak" onclick="openLinkModal('${h.id}')">+ Actie koppelen</button>
+    </div>`;
+    }
+
     function renderPlaybookList() {
         const el = document.getElementById('playbook-list');
         if (!hoofdstukken.length) {
@@ -1190,7 +1226,7 @@
         </div>
         <span class="doel-chevron ${open ? 'open' : ''}">&#8964;</span>
       </div>
-      ${open ? `<div class="notitie-body">${h.inhoud ? esc(h.inhoud) : '<em>Nog geen inhoud.</em>'}</div>` : ''}
+      ${open ? `<div class="notitie-body">${h.inhoud ? esc(h.inhoud) : '<em>Nog geen inhoud.</em>'}</div>${renderGekoppeldeActies(h)}` : ''}
     </div>`
             ;
         }).join('');
@@ -1257,6 +1293,101 @@
         if (!confirm('Dit hoofdstuk verwijderen? Dit kan niet ongedaan worden gemaakt.'))
             return;
         await veilig(() => deleteDoc(doc(db, 'playbook', id)), 'het verwijderen van dit hoofdstuk');
+    };
+
+    // ============ ACTIE KOPPELEN (Playbook <-> Doelen & Taken) ============
+    function fillLinkDoelSelect() {
+        const sel = document.getElementById('link-doel');
+        sel.innerHTML = doelen.map(d => `<option value="${d.id}">${esc(d.naam)}</option>`).join('');
+    }
+
+    window.fillLinkTaakSelect = () => {
+        const doelId = document.getElementById('link-doel').value;
+        const d = doelen.find(x => x.id === doelId);
+        const sel = document.getElementById('link-taak');
+        const taakOpties = d ? d.taken.map((t, i) => `<option value="${i}">${esc(t.tekst)} (${esc(t.status)})</option>`).join('') : '';
+        sel.innerHTML = taakOpties + '<option value="__nieuw__">+ Nieuwe taak toevoegen...</option>';
+        toggleLinkNieuweTaak();
+    };
+
+    window.toggleLinkNieuweTaak = () => {
+        const nieuw = document.getElementById('link-taak').value === '__nieuw__';
+        document.getElementById('link-nieuwe-taak').style.display = nieuw ? 'block' : 'none';
+    };
+
+    window.openLinkModal = (hoofdstukId) => {
+        if (!doelen.length) {
+            alert('Maak eerst een doel aan bij Doelen & Taken — een taak hoort altijd bij een doel.');
+            return;
+        }
+        linkHoofdstukId = hoofdstukId;
+        document.getElementById('link-nieuwe-taak').value = '';
+        fillLinkDoelSelect();
+        fillLinkTaakSelect();
+        document.getElementById('link-modal').style.display = 'flex';
+    };
+
+    window.closeLinkModal = () => {
+        linkHoofdstukId = null;
+        document.getElementById('link-modal').style.display = 'none';
+    };
+
+    window.saveLink = async () => {
+        const h = hoofdstukken.find(x => x.id === linkHoofdstukId);
+        if (!h)
+            return;
+        const doelId = document.getElementById('link-doel').value;
+        const taakKeuze = document.getElementById('link-taak').value;
+        const bestaandeLinks = h.gekoppeldeTaken || [];
+        let taakIdx;
+
+        if (taakKeuze === '__nieuw__') {
+            const tekst = document.getElementById('link-nieuwe-taak').value.trim();
+            if (!tekst) {
+                alert('Vul een omschrijving in voor de nieuwe taak.');
+                return;
+            }
+            const d = doelen.find(x => x.id === doelId);
+            if (!d)
+                return;
+            taakIdx = d.taken.length;
+            const gelukt = await veilig(() => updateDoc(doc(db, 'doelen', doelId), {
+                taken: [...d.taken, {
+                    tekst,
+                    status: 'gepland'
+                }]
+            }), 'het aanmaken van deze taak');
+            if (!gelukt)
+                return;
+        } else {
+            taakIdx = parseInt(taakKeuze, 10);
+        }
+
+        if (bestaandeLinks.some(l => l.doelId === doelId && l.taakIdx === taakIdx)) {
+            alert('Deze taak is al gekoppeld aan dit hoofdstuk.');
+            return;
+        }
+
+        const gelukt2 = await veilig(() => updateDoc(doc(db, 'playbook', linkHoofdstukId), {
+            gekoppeldeTaken: [...bestaandeLinks, {
+                doelId,
+                taakIdx
+            }]
+        }), 'het koppelen van deze actie');
+        if (gelukt2)
+            closeLinkModal();
+        else if (taakKeuze === '__nieuw__')
+            alert('De taak is wel aangemaakt bij Doelen & Taken, maar het koppelen ervan aan dit hoofdstuk is niet gelukt. Je kunt het via "+ Actie koppelen" nog een keer proberen.');
+    };
+
+    window.unlinkActie = async (hoofdstukId, linkIdx) => {
+        const h = hoofdstukken.find(x => x.id === hoofdstukId);
+        if (!h)
+            return;
+        const nieuweLinks = (h.gekoppeldeTaken || []).filter((_, i) => i !== linkIdx);
+        await veilig(() => updateDoc(doc(db, 'playbook', hoofdstukId), {
+            gekoppeldeTaken: nieuweLinks
+        }), 'het ontkoppelen van deze actie');
     };
     </script>
 </body>
