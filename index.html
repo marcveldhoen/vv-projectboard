@@ -19,6 +19,7 @@
                 <p>Projectboard — log in om verder te gaan</p>
             </div>
             <div class="auth-error" id="auth-error"></div>
+            <div class="pw-msg" id="auth-msg"></div>
             <div class="form-group">
                 <label>E-mailadres</label>
                 <input type="email" id="email" placeholder="jouw@email.nl"/>
@@ -26,6 +27,9 @@
             <div class="form-group">
                 <label>Wachtwoord</label>
                 <input type="password" id="password" placeholder="••••••••"/>
+            </div>
+            <div class="auth-vergeten">
+                <button type="button" class="link-pw" onclick="doPasswordReset()">Wachtwoord vergeten?</button>
             </div>
             <button class="btn-primary" id="login-btn" onclick="doLogin()">Inloggen</button>
             <div class="auth-scheiding"><span>of</span></div>
@@ -267,7 +271,7 @@
     <!-- ==================== FIREBASE ==================== -->
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, reauthenticateWithCredential, EmailAuthProvider, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, reauthenticateWithCredential, EmailAuthProvider, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -368,6 +372,7 @@
         const btn = document.getElementById('login-btn');
         const err = document.getElementById('auth-error');
         err.style.display = 'none';
+        verbergAuthMelding();
         btn.disabled = true;
         btn.textContent = 'Inloggen...';
         try {
@@ -393,10 +398,15 @@
         const btn = document.getElementById('google-btn');
         const err = document.getElementById('auth-error');
         err.style.display = 'none';
+        verbergAuthMelding();
         btn.disabled = true;
         btn.textContent = 'Inloggen...';
         try {
-            await signInWithPopup(auth, new GoogleAuthProvider());
+            const provider = new GoogleAuthProvider();
+            // Vraagt Google om altijd te laten kiezen welk account je gebruikt,
+            // ook als je in deze browser al bij Google ingelogd bent.
+            provider.setCustomParameters({ prompt: 'select_account' });
+            await signInWithPopup(auth, provider);
         } catch (e) {
             console.error(e);
             if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') {
@@ -414,6 +424,45 @@
         }
         btn.disabled = false;
         btn.textContent = 'Inloggen met Google';
+    };
+
+    // Verbergt de groene bevestiging op het inlogscherm.
+    function verbergAuthMelding() {
+        const msg = document.getElementById('auth-msg');
+        msg.className = 'pw-msg';
+        msg.style.display = 'none';
+    }
+
+    // Laat Firebase een herstelmail sturen naar het ingevulde e-mailadres.
+    // In die mail staat een link waarmee je zelf een nieuw wachtwoord kiest.
+    window.doPasswordReset = async () => {
+        const email = document.getElementById('email').value.trim();
+        const err = document.getElementById('auth-error');
+        const msg = document.getElementById('auth-msg');
+        err.style.display = 'none';
+        verbergAuthMelding();
+        if (!email) {
+            err.textContent = 'Vul eerst je e-mailadres in bij het bovenste veld.';
+            err.style.display = 'block';
+            return;
+        }
+        try {
+            await sendPasswordResetEmail(auth, email);
+            msg.textContent = 'Er is een e-mail gestuurd naar ' + email + '. Kijk ook in je map ongewenste e-mail.';
+            msg.className = 'pw-msg success';
+        } catch (e) {
+            console.error(e);
+            if (e.code === 'auth/invalid-email') {
+                err.textContent = 'Dit lijkt geen geldig e-mailadres. Controleer het en probeer het opnieuw.';
+            } else if (e.code === 'auth/too-many-requests') {
+                err.textContent = 'Te veel pogingen. Wacht een paar minuten en probeer het opnieuw.';
+            } else if (e.code === 'auth/network-request-failed') {
+                err.textContent = 'Geen internetverbinding. Controleer je verbinding en probeer het opnieuw.';
+            } else {
+                err.textContent = 'Het versturen van de herstelmail is niet gelukt. Probeer het opnieuw.';
+            }
+            err.style.display = 'block';
+        }
     };
 
     window.doLogout = () => signOut(auth);
