@@ -58,6 +58,7 @@
             <button class="tab" onclick="showTab('doelen')">Doelen &amp; Taken</button>
             <button class="tab" onclick="showTab('notities')">Notities &amp; Besluiten</button>
             <button class="tab" onclick="showTab('planning')">Planning</button>
+            <button class="tab" onclick="showTab('playbook')">Playbook</button>
         </div>
 
         <!-- MAIN CONTENT -->
@@ -186,6 +187,32 @@
                     <div id="plan-list"></div>
                 </div>
             </div>
+
+            <!-- PLAYBOOK TAB -->
+            <div id="tab-playbook" style="display:none">
+                <!-- ADD/EDIT FORM -->
+                <div class="notitie-form" id="hoofdstuk-form" style="display:none">
+                    <h3 id="hf-title">Nieuw hoofdstuk</h3>
+                    <div class="modal-gold"></div>
+                    <div class="nf-row">
+                        <input type="text" id="hf-titel" placeholder="Titel (bijv. '13. Nieuw onderwerp')"/>
+                    </div>
+                    <textarea class="nf-textarea" id="hf-inhoud" style="min-height:280px" placeholder="Schrijf hier de inhoud van dit hoofdstuk..."></textarea>
+                    <div class="nf-footer">
+                        <button class="btn-cancel" onclick="closeHoofdstukForm()">Annuleren</button>
+                        <button class="btn-save" onclick="saveHoofdstuk()">Opslaan</button>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2>Playbook</h2>
+                    <button class="btn-add-doel" onclick="openAddHoofdstuk()">+ Hoofdstuk toevoegen</button>
+                </div>
+
+                <div id="playbook-list">
+                    <div class="loading">Laden...</div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -251,6 +278,9 @@
     let unsubPlan = null;
     let planView = 'timeline';
     let editingPlanId = null;
+    let hoofdstukken = [];
+    let unsubPlaybook = null;
+    let editingHoofdstukId = null;
 
     // ============ HULPFUNCTIES ============
 
@@ -372,6 +402,10 @@
                 unsubPlan();
                 unsubPlan = null;
             }
+            if (unsubPlaybook) {
+                unsubPlaybook();
+                unsubPlaybook = null;
+            }
         }
     });
 
@@ -422,9 +456,21 @@
             meldLeesfout(e);
             document.getElementById('plan-list').innerHTML = '<div class="empty-state">De planning kon niet worden geladen. Zie de melding bovenaan het scherm.</div>';
         });
+        const qh = query(collection(db, 'playbook'), orderBy('aangemaakt'));
+        unsubPlaybook = onSnapshot(qh, snap => {
+            hoofdstukken = snap.docs.map(d => ({
+                id: d.id,
+                ...d.data()
+            }));
+            renderPlaybookList();
+            renderStartTiles();
+        }, e => {
+            meldLeesfout(e);
+            document.getElementById('playbook-list').innerHTML = '<div class="empty-state">Het playbook kon niet worden geladen. Zie de melding bovenaan het scherm.</div>';
+        });
     }
 
-    // Tekent de vier tegels op de startpagina, met per tegel een cijfer
+    // Tekent de tegels op de startpagina, met per tegel een cijfer
     // dat uit de al ingelezen gegevens komt.
     function renderStartTiles() {
         const el = document.getElementById('start-grid');
@@ -460,6 +506,12 @@
                 naam: 'Planning',
                 cijfer: metDeadline,
                 uitleg: teLaat ? (teLaat === 1 ? '1 deadline is verstreken.' : teLaat + ' deadlines zijn verstreken.') : 'Geen verstreken deadlines.'
+            },
+            {
+                tab: 'playbook',
+                naam: 'Playbook',
+                cijfer: hoofdstukken.length,
+                uitleg: hoofdstukken.length === 1 ? '1 hoofdstuk vastgelegd.' : hoofdstukken.length + ' hoofdstukken vastgelegd.'
             }
         ];
 
@@ -676,7 +728,7 @@
     });
 
     // Tabs
-    const TABS = ['start', 'dashboard', 'doelen', 'notities', 'planning'];
+    const TABS = ['start', 'dashboard', 'doelen', 'notities', 'planning', 'playbook'];
 
     window.showTab = (tab) => {
         TABS.forEach(t => document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none');
@@ -1118,6 +1170,93 @@
         if (!confirm('Dit item verwijderen?'))
             return;
         await veilig(() => deleteDoc(doc(db, 'planning', id)), 'het verwijderen van dit item');
+    };
+
+    // ============ PLAYBOOK ============
+    function renderPlaybookList() {
+        const el = document.getElementById('playbook-list');
+        if (!hoofdstukken.length) {
+            el.innerHTML = '<div class="empty-state">Nog geen hoofdstukken. Klik op "+ Hoofdstuk toevoegen" om te starten.</div>';
+            return;
+        }
+        el.innerHTML = hoofdstukken.map(h => {
+            const open = h._open || false;
+            return `<div class="doel-card">
+      <div class="doel-header" onclick="toggleHoofdstuk('${h.id}')">
+        <span class="doel-name">${esc(h.titel)}</span>
+        <div class="doel-btns">
+          <button class="doel-btn" onclick="event.stopPropagation();editHoofdstuk('${h.id}')" title="Bewerken">&#9998;</button>
+          <button class="doel-btn del" onclick="event.stopPropagation();delHoofdstuk('${h.id}')" title="Verwijderen">&times;</button>
+        </div>
+        <span class="doel-chevron ${open ? 'open' : ''}">&#8964;</span>
+      </div>
+      ${open ? `<div class="notitie-body">${h.inhoud ? esc(h.inhoud) : '<em>Nog geen inhoud.</em>'}</div>` : ''}
+    </div>`
+            ;
+        }).join('');
+    }
+
+    window.toggleHoofdstuk = (id) => {
+        const h = hoofdstukken.find(x => x.id === id);
+        if (h) {
+            h._open = !h._open;
+            renderPlaybookList();
+        }
+    };
+
+    window.openAddHoofdstuk = () => {
+        editingHoofdstukId = null;
+        document.getElementById('hf-title').textContent = 'Nieuw hoofdstuk';
+        document.getElementById('hf-titel').value = '';
+        document.getElementById('hf-inhoud').value = '';
+        document.getElementById('hoofdstuk-form').style.display = 'block';
+        document.getElementById('hf-titel').focus();
+    };
+
+    window.editHoofdstuk = (id) => {
+        const h = hoofdstukken.find(x => x.id === id);
+        if (!h)
+            return;
+        editingHoofdstukId = id;
+        document.getElementById('hf-title').textContent = 'Hoofdstuk bewerken';
+        document.getElementById('hf-titel').value = h.titel || '';
+        document.getElementById('hf-inhoud').value = h.inhoud || '';
+        document.getElementById('hoofdstuk-form').style.display = 'block';
+        document.getElementById('hf-titel').focus();
+    };
+
+    window.closeHoofdstukForm = () => {
+        editingHoofdstukId = null;
+        document.getElementById('hoofdstuk-form').style.display = 'none';
+    };
+
+    window.saveHoofdstuk = async () => {
+        const titel = document.getElementById('hf-titel').value.trim();
+        const inhoud = document.getElementById('hf-inhoud').value.trim();
+        if (!titel) {
+            alert('Vul een titel in.');
+            return;
+        }
+        const data = {
+            titel,
+            inhoud,
+            bijgewerkt: serverTimestamp()
+        };
+        let gelukt;
+        if (editingHoofdstukId) {
+            gelukt = await veilig(() => updateDoc(doc(db, 'playbook', editingHoofdstukId), data), 'het opslaan van dit hoofdstuk');
+        } else {
+            data.aangemaakt = serverTimestamp();
+            gelukt = await veilig(() => addDoc(collection(db, 'playbook'), data), 'het opslaan van dit hoofdstuk');
+        }
+        if (gelukt)
+            closeHoofdstukForm();
+    };
+
+    window.delHoofdstuk = async (id) => {
+        if (!confirm('Dit hoofdstuk verwijderen? Dit kan niet ongedaan worden gemaakt.'))
+            return;
+        await veilig(() => deleteDoc(doc(db, 'playbook', id)), 'het verwijderen van dit hoofdstuk');
     };
     </script>
 </body>

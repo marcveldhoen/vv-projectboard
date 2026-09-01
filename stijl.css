@@ -1422,6 +1422,10 @@
         gap: 16px
     }
 
+    .start-grid > .start-tile:last-child:nth-child(odd) {
+        grid-column: 1 / -1
+    }
+
     .start-tile {
         background: var(--white);
         border: 1.5px solid var(--border);
