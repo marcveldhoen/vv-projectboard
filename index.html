@@ -1190,6 +1190,42 @@
     };
 
     // ============ PLAYBOOK ============
+    // Herkent regels die beginnen en eindigen met een verticale streep (|) als
+    // rijen van een tabel, en zet die om in een nette HTML-tabel. De rest van
+    // de tekst blijft gewoon lopende tekst, met behoud van witregels.
+    function renderHoofdstukInhoud(tekst) {
+        if (!tekst)
+            return '<em>Nog geen inhoud.</em>';
+        const isTabelRegel = r => /^\|.*\|$/.test(r.trim());
+        const regels = tekst.split('\n');
+        let html = '';
+        let i = 0;
+        while (i < regels.length) {
+            if (isTabelRegel(regels[i])) {
+                const tabelRegels = [];
+                while (i < regels.length && isTabelRegel(regels[i])) {
+                    tabelRegels.push(regels[i].trim());
+                    i++;
+                }
+                const rijen = tabelRegels.map(r => r.slice(1, -1).split('|').map(c => c.trim()));
+                html += '<table class="hoofdstuk-tabel"><thead><tr>' + rijen[0].map(c => `<th>${esc(c)}</th>`).join('') + '</tr></thead><tbody>';
+                for (let j = 1; j < rijen.length; j++)
+                    html += '<tr>' + rijen[j].map(c => `<td>${esc(c)}</td>`).join('') + '</tr>';
+                html += '</tbody></table>';
+            } else {
+                const tekstRegels = [];
+                while (i < regels.length && !isTabelRegel(regels[i])) {
+                    tekstRegels.push(regels[i]);
+                    i++;
+                }
+                const blok = tekstRegels.join('\n').replace(/^\n+|\n+$/g, '');
+                if (blok.trim())
+                    html += `<div class="hoofdstuk-tekstblok">${esc(blok)}</div>`;
+            }
+        }
+        return html;
+    }
+
     function renderGekoppeldeActies(h) {
         const links = h.gekoppeldeTaken || [];
         let rijen = '';
@@ -1226,7 +1262,7 @@
         </div>
         <span class="doel-chevron ${open ? 'open' : ''}">&#8964;</span>
       </div>
-      ${open ? `<div class="notitie-body">${h.inhoud ? esc(h.inhoud) : '<em>Nog geen inhoud.</em>'}</div>${renderGekoppeldeActies(h)}` : ''}
+      ${open ? `<div class="notitie-body">${renderHoofdstukInhoud(h.inhoud)}</div>${renderGekoppeldeActies(h)}` : ''}
     </div>`
             ;
         }).join('');

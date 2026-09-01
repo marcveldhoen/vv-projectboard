@@ -1069,6 +1069,42 @@
         margin-bottom: .5rem
     }
 
+    .hoofdstuk-tekstblok {
+        margin-bottom: 1rem
+    }
+
+    .hoofdstuk-tekstblok:last-child {
+        margin-bottom: 0
+    }
+
+    .hoofdstuk-tabel {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+        font-size: 13px;
+        white-space: normal
+    }
+
+    .hoofdstuk-tabel th {
+        background: var(--paper);
+        color: var(--green);
+        font-weight: 600;
+        text-align: left;
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        font-family: 'Poppins', sans-serif
+    }
+
+    .hoofdstuk-tabel td {
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        vertical-align: top
+    }
+
+    .hoofdstuk-tabel tr:first-child td {
+        border-top: 1px solid var(--border)
+    }
+
     .notitie-form {
         background: var(--white);
         border: 1.5px solid var(--border);
